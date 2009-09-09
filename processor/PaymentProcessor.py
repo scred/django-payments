@@ -66,11 +66,28 @@ class PaymentProcessor():
             value = payment.get_value(value)
             data["%s%s" % (self.PREFIX, key)] = value
 
+        # get custom data
+        data.update(self.checkout_hash(data))
+
+        # FIXME: Itemized cart data for Paypal et al is not done.
+            
         return data
 
-        # raise NotImplementedError("method not implemented for the processor")
+    @classmethod
+    def custom_form_params(self, payment):
+        """
+        Custom parameters for the checkout form. Override as
+        appropriate in a payment processor class. Should return a dict
+        where keys and values are strings.
+        """
 
+        # FIXME: deprecated
+        
+        return {}
 
+    @classmethod
+    def success(self, request, payment_method, payment_code):
+        raise NotImplementedError("method not implemented for the processor")
     
 
 def success_view(request, payment_method, payment_code):

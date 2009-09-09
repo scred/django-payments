@@ -28,4 +28,4 @@ payment = PickledPayment()
 nordea = PaymentProcessor.get_processor("nordea")
 sampo = PaymentProcessor.get_processor("sampo")
 
-print nordea.get_checkout_form(payment)
+print sampo.get_checkout_form(payment)

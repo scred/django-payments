@@ -46,13 +46,13 @@ class SampoPaymentProcessor(MaksunapitPaymentProcessor):
     PAYMENT_REQ_MAC = "TARKISTE"
     PAYMENT_REQ_PARAMS = (
         ("merchant_secret", "processor"),
-        ("amount", "payment"),
-        ("fi_reference", "payment"),
-        ("merchant_key", "processor"),
-        ("VERSIO", "fixed"),
-        ("language", "payment"),
-        ("success", "url"),
-        ("cancel", "url"),
+        ("SUMMA", "data"),
+        ("VIITE", "data"),
+        ("KNRO", "data"),
+        ("VERSIO", "data"),
+        ("VALUUTTA", "data"),
+        # ("OKURL", "data"), # FIXME
+        # ("VIRHEURL", "data"), # FIXME
     )
     PAYMENT_REQ_SEPARATOR = ""
 
