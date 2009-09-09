@@ -1,6 +1,6 @@
-from PaymentProcessor import PaymentProcessor
+from processor import PaymentProcessor, MaksunapitPaymentProcessor
 
-class NordeaPaymentProcessor(PaymentProcessor):
+class NordeaPaymentProcessor(MaksunapitPaymentProcessor):
 
     """
     Payment processor for Nordea's "E-maksu".

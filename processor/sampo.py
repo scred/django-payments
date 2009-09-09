@@ -1,6 +1,6 @@
-from PaymentProcessor import PaymentProcessor
+from processor import PaymentProcessor, MaksunapitPaymentProcessor
 
-class SampoPaymentProcessor(PaymentProcessor):
+class SampoPaymentProcessor(MaksunapitPaymentProcessor):
 
     """
     Specification:
