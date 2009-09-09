@@ -1,0 +1,4 @@
+from PaymentProcessor import PaymentProcessor
+
+from nordea import NordeaPaymentProcessor
+from sampo import SampoPaymentProcessor

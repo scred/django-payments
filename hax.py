@@ -4,7 +4,7 @@
 A hacky testing script.
 """
 
-from PaymentProcessor import PaymentProcessor
+from processor import PaymentProcessor
 from SP import PickledPayment
 
 PaymentProcessor.set_parameters("nordea", {
