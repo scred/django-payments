@@ -34,9 +34,103 @@ class PaymentProcessor():
     # class method to set auditing class
     # class method to set payables?
 
+    @classmethod
+    def get_checkout_form(self, payment):
+        
+        data = {}
+
+        # set payment method fixed data
+        for key, value in self.DATA_FIXED.items():
+            data["%s%s" % (self.PREFIX, key)] = value
+
+        # set fixed merchant data
+        for key, value in self.DATA_MERCHANT.items():
+            value = self.PARAMETERS[value]
+            data["%s%s" % (self.PREFIX, key)] = value
+
+        # set language
+        data["%s%s" % (self.PREFIX, self.LANGUAGE_PARAM)] = \
+            self.LANGUAGE_DEFAULT
+        language = payment.get_value("language")
+        if language and language in self.LANGUAGE:
+            data["%s%s" % (self.PREFIX, self.LANGUAGE_PARAM)] = \
+                self.LANGUAGE[language]
+
+        # set currency
+        data["%s%s" % (self.PREFIX, self.CURRENCY_PARAM)] = \
+            self.CURRENCY_DEFAULT
+        currency = payment.get_value("currency")
+        if currency and currency in self.CURRENCY:
+            data["%s%s" % (self.PREFIX, self.CURRENCY_PARAM)] = \
+                self.CURRENCY[currency]
+
+        # set variable payment data
+        for key, value in self.DATA_PAYMENT.items():
+            value = payment.get_value(value)
+            data["%s%s" % (self.PREFIX, key)] = value
+
+        return data
+
+        # raise NotImplementedError("method not implemented for the processor")
+
 class SampoPaymentProcessor(PaymentProcessor):
 
-    pass
+    """
+    Specification:
+      http://bit.ly/ZURkl (in Finnish, PDF)
+
+    Merchant credentials for testing:
+      merchant_key = "000000000000"
+      merchant_secret = "jumCLB4T2ceZWGJ9ztjuhn5FaeZnTm5HpfDXWU2APRqfDcsrBs8mqkFARzm7uXKd"
+    """
+
+    PREFIX = ""
+
+    PARAMETERS = {}
+
+    DATA_FIXED = {
+        "VERSIO": "3",
+    }
+
+    DATA_MERCHANT = {
+        "KNRO": "merchant_key",
+        # "merchant_secret"
+    }
+
+    CURRENCY = {
+        "EUR": "EUR",
+    }
+    CURRENCY_PARAM = "VALUUTTA"
+    CURRENCY_DEFAULT = "EUR"
+
+    LANGUAGE = {
+        "fi": "1",
+        "sv": "2",
+        "en": "3",
+    }
+    LANGUAGE_PARAM = "lng"
+    LANGUAGE_DEFAULT = "en"
+
+    DATA_PAYMENT = {
+        "SUMMA": "amount",
+        "VIITE": "fi_reference",
+    }
+
+    PAYMENT_REQ_MAC = "TARKISTE"
+    PAYMENT_REQ_PARAMS = (
+        ("merchant_secret", "processor"),
+        ("amount", "payment"),
+        ("fi_reference", "payment"),
+        ("merchant_key", "processor"),
+        ("VERSIO", "fixed"),
+        ("language", "payment"),
+        ("success", "url"),
+        ("cancel", "url"),
+    )
+    PAYMENT_REQ_SEPARATOR = ""
+
+    # OKURL
+    # VIRHEURL
 
 PaymentProcessor.register_processor("sampo", SampoPaymentProcessor)
 
@@ -94,8 +188,8 @@ class NordeaPaymentProcessor(PaymentProcessor):
         "MSG": "message",
     }
 
-    MAC_PARAMS_IN = None
-    MAC_PARAMS_OUT = None
+    # MAC_PARAMS_IN = None
+    # MAC_PARAMS_OUT = None
 
     #merchant_key
     #merchant_secret
@@ -171,45 +265,6 @@ class NordeaPaymentProcessor(PaymentProcessor):
         # 1. lookup payment
         # 2. call the success() of the payment (with method) ?
         # 3. return redirect to the payment's ok url
-
-    @classmethod
-    def get_checkout_form(self, payment):
-
-        # this should probably be with the super class and be automated
-        
-        data = {}
-
-        # set payment method fixed data
-        for key, value in self.DATA_FIXED.items():
-            data["%s%s" % (self.PREFIX, key)] = value
-
-        # set fixed merchant data
-        for key, value in self.DATA_MERCHANT.items():
-            value = self.PARAMETERS[value]
-            data["%s%s" % (self.PREFIX, key)] = value
-
-        # set language
-        data["%s%s" % (self.PREFIX, self.LANGUAGE_PARAM)] = \
-            self.LANGUAGE_DEFAULT
-        language = payment.get_value("language")
-        if language and language in self.LANGUAGE:
-            data["%s%s" % (self.PREFIX, self.LANGUAGE_PARAM)] = \
-                self.LANGUAGE[language]
-
-        # set currency
-        data["%s%s" % (self.PREFIX, self.CURRENCY_PARAM)] = \
-            self.CURRENCY_DEFAULT
-        currency = payment.get_value("currency")
-        if currency and currency in self.CURRENCY:
-            data["%s%s" % (self.PREFIX, self.CURRENCY_PARAM)] = \
-                self.CURRENCY[currency]
-
-        # set variable payment data
-        for key, value in self.DATA_PAYMENT.items():
-            value = payment.get_value(value)
-            data["%s%s" % (self.PREFIX, key)] = value
-
-        return data
 
 PaymentProcessor.register_processor("nordea", NordeaPaymentProcessor)
     
