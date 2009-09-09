@@ -1,0 +1,76 @@
+how to make things work for a marketplace with multiple merchants?
+
+Payable
+
+ get_by_code() 
+
+ get_cart()
+ get_payment_methods()
+
+ signal handlers
+
+Payment
+ 
+ init with identifier
+ serialize -> kvps
+ deserialize <- kvps
+ simply have a kvp store for basic details
+ audit kvp store
+ cart: Cart
+
+ parameters:
+  - receiver: sometimes fixed sometimes not
+
+PaymentDatastore
+
+PaymentProcessor base class
+
+  type label
+  fixed params per type
+  cart ??
+  merchant params -> save in settings
+  payment: Payment
+  conversion matrix (for get_form)
+
+  get_form()
+   - fixed params (class variables)
+   - merchant params from settins
+   
+  views
+
+  success_view(request, method, code)
+   - lookup processor by method
+   - lookup payment by code
+   - call processor.sucess_validate(request, payment)
+
+  success_validate(request, payment)
+   - do the checking
+   - clear the payment
+   - redirect to somewhere (known by payment)
+
+PaymentProcessor()
+ Paypal(PaymentProcessor)
+ OnlineFiDebit(PaymentProcessor)
+  Nordea(OnlineFiDebit)
+
+
+Cart
+
+1. first you create a cart
+2. link the cart to a payment (ie, create the payment)
+3. then checkout the payment
+
+redirection after processing completes
+validation?
+
+
+using signals?
+
+hooks to save, ie to storage
+
+audit data storage with simple kvp
+
+
+online debit
+moneybookers
+paypal

@@ -1,0 +1,5 @@
+Online Debit Payments
+
+Scoping out how a generic payments module for online debit payments,
+or more specifically, payments where you go through the processors
+site, would work.
