@@ -21,7 +21,9 @@ class SamlinkPaymentProcessor(MaksunapitPaymentProcessor):
     """
 
     METHOD = "samlink"
+
     URL = "https://verkkomaksu.inetpankki.samlink.fi/vm/login.html"
+    BUTTON_URL = "FIXME"
 
     PARAMETERS = {}
 

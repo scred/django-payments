@@ -7,3 +7,4 @@ from nordea import NordeaPaymentProcessor
 from sampo import SampoPaymentProcessor
 from op import OpPaymentProcessor
 from samlink import SamlinkPaymentProcessor
+from tapiola import TapiolaPaymentProcessor

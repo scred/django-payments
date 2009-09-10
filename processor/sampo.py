@@ -16,7 +16,9 @@ class SampoPaymentProcessor(MaksunapitPaymentProcessor):
     """
 
     METHOD = "sampo"
-    URL = "FIXME"
+
+    URL = "https://verkkopankki.sampopankki.fi/SP/vemaha/VemahaApp"
+    BUTTON_URL = "https://www.sampopankki.fi/verkkopalvelu/logo.gif"
 
     PARAMETERS = {}
 

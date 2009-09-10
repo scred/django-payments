@@ -21,7 +21,9 @@ class NordeaPaymentProcessor(MaksunapitPaymentProcessor):
     """
 
     METHOD = "nordea"
-    URL = "FIXME"
+
+    URL = "https://solo3.nordea.fi/cgi-bin/SOLOPM01"
+    BUTTON_URL = "FIXME"
 
     PARAMETERS = {}
 

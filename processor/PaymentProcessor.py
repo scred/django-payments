@@ -98,12 +98,10 @@ def success_view(request, payment_method, payment_code):
     pp = PaymentProcessor.get_processor(payment_method)
     try:        
         pp.success(request, payment_method, payment_code)
-        #return HttpResponseRedirect(pp.PARAMETERS["return_url"] % payment_code)
+        # return HttpResponseRedirect(pp.PARAMETERS["return_url"] % payment_code)
     except PaymentProcessingError:
+        # return HttpResponseRedirect(pp.PARAMETERS["return_url"] % payment_code)
         pass
-        #return HttpResponseRedirect(pp.PARAMETERS["return_url"] % payment_code)
-
-
 
     # what about the refund hooks?
 

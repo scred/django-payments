@@ -20,7 +20,9 @@ class OpPaymentProcessor(MaksunapitPaymentProcessor):
     """
 
     METHOD = "op"
+
     URL = "https://kultaraha.op.fi/cgi-bin/krcgi"
+    BUTTON_URL = ""
 
     PARAMETERS = {}
 
