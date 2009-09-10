@@ -86,14 +86,5 @@ class NordeaPaymentProcessor(MaksunapitPaymentProcessor):
     PAYMENT_RESP_SEPARATOR = "&"
 
     # KEYVERS: ??
-    
-    # how to get the parameters
-
-    # what about the refund hooks?
-
-    # what about the payment check hooks?
-
-    # classmethods needed for setting fixed merchant parameters (done
-    # in eg settings.py)
 
 PaymentProcessor.register_processor(NordeaPaymentProcessor)

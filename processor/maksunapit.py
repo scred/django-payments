@@ -52,19 +52,16 @@ class MaksunapitPaymentProcessor(PaymentProcessor):
             # raise PaymentProcessingError("Return MAC doesn't match!")
             pass
 
-        
+        from SP import Payment
 
-        # FIXME: should lookup the payment and call its clearead method
+        payment = Payment.lookup(payment_code)
+        payment.success(self.METHOD)
+        
+        print "payment:", payment
+        #print "payment:", type(payment)
 
         # FIXME: all ok, now need to do a redirect
-
-        # then use super to send the signal? (but paypal doesn't work
-        # that way)
 
         # should we check the payment value and stuff like that?
 
         # who makes the call for audit?
-
-        # 1. lookup payment
-        # 2. call the success() of the payment (with method) ?
-        # 3. return redirect to the payment's ok url

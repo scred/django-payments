@@ -12,7 +12,6 @@
 from processor import PaymentProcessor
 
 class Payment():
-
     """
     Mandatory parameters for a payment:
      - ??
@@ -57,31 +56,58 @@ class Payment():
             forms[method] = pp.get_checkout_form(self)
         return forms
 
-    def success(payment_method):
-        """ testing zunk """
-
-        # 1. mark as cleared
-        # 2. set data, if any
-        # 3. send signal
+    def success(self, payment_method):
         
-        self.storage.set_value("cleared", "true")
-        self.storage.set_value("method", payment_method)
+        self.set_value("_cleared", "true")
+        self.set_value("_method", payment_method)
+        self.save()
 
-class PickledPayment(Payment):
-
-    # FIXME: Requires a load to unpickle from the file based on the
-    # code. Call load() in an __init__().
+        # FIXME: Sending signal is missing!
 
     def get_value(self, key):
-        return self.values[key]
+        return self.storage.get_value(self, key)
 
     def set_value(self, key, value):
-        # print "set_value() of PickledPayment() called: %s=%s" % (key, value)
-        self.values[key] = value
-        return value
+        return self.storage.set_value(self, key, value)
 
     def save(self):
+        return self.storage.save(self)
+
+    def load(self):
+        return self.storage.load(self)
+
+    @classmethod
+    def lookup(self, code):
+        payment = Payment(code=code)
+        #print "payment one:", payment
+        payment.load()
+        #print "payment two:", payment        
+        return payment
+
+    
+
+class PickledStorage():
+
+    @classmethod
+    def get_value(self, payment, key):
+        return payment.values[key]
+
+    @classmethod
+    def set_value(self, payment, key, value):
+        # print "set_value() of PickledPayment() called: %s=%s" % (key, value)
+        payment.values[key] = value
+        return value
+
+    @classmethod
+    def save(self, payment):
         import pickle
-        fh = open("%s.pickle" % self.code, "w")
-        pickle.dump(self.values, fh)
+        fh = open("%s.pickle" % payment.code, "w")
+        pickle.dump(payment.values, fh)
+        fh.close()
+
+    @classmethod
+    def load(self, payment):
+        import pickle
+        fh = open("%s.pickle" % payment.code, "r")
+        payment.values = pickle.load(fh)
         fh.close()

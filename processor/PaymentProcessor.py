@@ -1,4 +1,7 @@
 class PaymentProcessor():
+    """
+    Base class for different payment processors. Not to be used directly.
+    """
 
     payment_processors = {}
 
@@ -85,18 +88,28 @@ class PaymentProcessor():
     @classmethod
     def success(self, request, payment_method, payment_code):
         raise NotImplementedError("method not implemented for the processor")
-    
+
+class PaymentProcessingError(Exception):
+    pass
+
+from django.http import HttpResponseRedirect
 
 def success_view(request, payment_method, payment_code):
 
-    # Q: how to set the return url? on a per processor basis, or on a
-    # per payable (/payment) basis?
+    # FIXME: lookup payment already here based on the code
 
-    # catch PaymentProcessingException?
+    # FIXME: should probably do something different on error
 
     pp = PaymentProcessor.get_processor(payment_method)
-    return pp.success(request, payment_method, payment_code)
+    try:        
+        pp.success(request, payment_method, payment_code)
+        #return HttpResponseRedirect(pp.PARAMETERS["return_url"] % payment_code)
+    except PaymentProcessingError:
+        pass
+        #return HttpResponseRedirect(pp.PARAMETERS["return_url"] % payment_code)
 
-class PaymentProcessingError(Exception):
 
-    pass
+
+    # what about the refund hooks?
+
+    # what about the payment check hooks?
