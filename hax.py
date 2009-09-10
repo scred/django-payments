@@ -1,11 +1,14 @@
 #!/usr/bin/python
 
 """
-A hacky testing script.
+An example and testing script. Creates a payment and retrieves a
+payment form for each method set for the payment.
 """
 
 from processor import PaymentProcessor
 from SP import PickledPayment
+
+# initialize payment processors with test credentials
 
 PaymentProcessor.set_parameters("nordea", {
     "merchant_key": "12345678",
@@ -21,11 +24,17 @@ PaymentProcessor.set_parameters("sampo", {
     "pfDXWU2APRqfDcsrBs8mqkFARzm7uXKd"
 })
 
-# PaymentProcessors.enable("nordea")
+# create a payment instance
 
-payment = PickledPayment()
+payment = PickledPayment(code="1234")
+payment.set_payment_methods(("nordea", "sampo"))
+payment.set_value("currency", "EUR")
+payment.set_value("language", "en")
+payment.set_value("message", "Payment test!")
+payment.set_value("amount", "42.00")
+payment.set_value("fi_reference", "1070")
 
-nordea = PaymentProcessor.get_processor("nordea")
-sampo = PaymentProcessor.get_processor("sampo")
 
-print sampo.get_checkout_form(payment)
+
+print payment.get_checkout_forms()
+
