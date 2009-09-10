@@ -3,7 +3,7 @@ from processor import PaymentProcessor, MaksunapitPaymentProcessor
 class NordeaPaymentProcessor(MaksunapitPaymentProcessor):
 
     """
-    Payment processor for Nordea's E-maksu.
+    Payment processor for Nordea E-maksu.
 
     Region(s): FI
 
@@ -14,6 +14,10 @@ class NordeaPaymentProcessor(MaksunapitPaymentProcessor):
       merchant_key = "12345678"
       merchant_secret = "LEHTI"
       merchant_account = "29501800000014"
+
+    Client credentials for testing:
+      username = "??"
+      password = "??"      
     """
 
     METHOD = "nordea"
@@ -61,7 +65,7 @@ class NordeaPaymentProcessor(MaksunapitPaymentProcessor):
         "SOLOPMT_REJECT": "error",
     }
 
-    PAYMENT_REQ_MAC = "MAC"
+    PAYMENT_REQ_MAC = "SOLOPMT_MAC"
     PAYMENT_REQ_PARAMS = (
         ("SOLOPMT_VERSION", "data"),
         ("SOLOPMT_STAMP", "data"),

@@ -5,3 +5,5 @@
 - Are the merchant secrets versioned? Do we need to store the version
   of the secret as part of the merchant parameters instead of keeping
   it as a fixed value as is done now. Check this from the vendor docs.
+
+- Need to have configurable decimal separator!

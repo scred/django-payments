@@ -9,6 +9,10 @@ class SampoPaymentProcessor(MaksunapitPaymentProcessor):
     Merchant credentials for testing:
       merchant_key = "000000000000"
       merchant_secret = "jumCLB4T2ceZWGJ9ztjuhn5FaeZnTm5HpfDXWU2APRqfDcsrBs8mqkFARzm7uXKd"
+
+    Client credentials for testing:
+      username = "??"
+      password = "??"
     """
 
     METHOD = "sampo"
