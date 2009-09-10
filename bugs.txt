@@ -1,0 +1,24 @@
+BUGS
+----
+
+- Having the parameters as simply variables in the class context
+  doesn't do well optional parameters. References to self.SOMETHING
+  crash if SOMETHING is not defined.
+
+- Are the merchant secrets versioned? Do we need to store the version
+  of the secret as part of the merchant parameters instead of keeping
+  it as a fixed value as is done now. Check this from the vendor docs.
+
+- Need to have configurable decimal separator!
+
+- Once this stuff is a bit more mature, the repository needs quite a
+  bit of cleaning up.
+
+- Check out Satchmo and see if we could make these payment processing
+  modules a bit more compliant with how stuff is done there.
+
+- The get_forms() methods do not return real Django forms, but only a
+  dict. Should refactor so that in templates only form.render is
+  necessary.
+
+- No support for the payment button images has been implemented.
