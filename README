@@ -1,5 +1,31 @@
-Online Debit Payments
+django-payments
 
-Scoping out how a generic payments module for online debit payments,
+(Scoping out how a generic payments module for online debit payments,
 or more specifically, payments where you go through the processors
-site, would work.
+site, would work.)
+
+Goals and design parameters:
+ 
+  - Support for credit card billing where credit card is taken on the
+    merchant's site is not to be supported. Reasons range from PCI
+    compliance requirements to the desire have a roughly similar
+    interaction pattern with all of the payment processors.
+
+  - ...
+
+Supported payment systems:
+
+  Finland, online debit for the following banks:
+
+    Nordea         ("nordea")
+    Tapiola        ("tapiola")
+    Sampo          ("sampo")
+    Osuuspankki    ("op")
+    Aktia/POP/SP   ("samlink")
+    Ålandsbanken   [under construction]
+    S-Pankki       [under construction]
+
+  Finland (and Scandinavia), credit card processors:
+
+    Luottokunta    [being planned]
+    DIBS           [being planned]

@@ -1,3 +1,5 @@
+# -*- coding: iso-8859-9 -*-
+
 from processor import PaymentProcessor, MaksunapitPaymentProcessor
 
 class TapiolaPaymentProcessor(MaksunapitPaymentProcessor):
@@ -5,10 +7,16 @@ class TapiolaPaymentProcessor(MaksunapitPaymentProcessor):
     """
     Payment processor for Tapiola Verkkomaksupalvelu.
 
+    Note: Tapiola uses the same banking system vendor (Crosskey) as
+    Ålandsbanken and S-Pankki. With minor modifications this
+    processing module should work with those banks as well.
+
     Region(s): FI
 
     Specifications:
-      ?? (in Finnish, PDF)
+      http://bit.ly/dRz1i (in Finnish, PDF) [Tapiola]
+      http://bit.ly/c9hXd (in Finnish, PDF) [S-Pankki]
+      ?? (in Finnish, PDF) [Ålandsbanken]
     
     Merchant credentials for testing:
       merchant_key = "TAPESHOPID"
