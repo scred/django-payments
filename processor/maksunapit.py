@@ -5,7 +5,7 @@ Hack to implement a base class for all Finnish online debit payments
 
 import md5 # FIXME: use hashlib instead
 
-from PaymentProcessor import PaymentProcessor
+from PaymentProcessor import PaymentProcessor, PaymentProcessingError
 
 class MaksunapitPaymentProcessor(PaymentProcessor):
 
@@ -29,42 +29,34 @@ class MaksunapitPaymentProcessor(PaymentProcessor):
     @classmethod
     def success(self, request, payment_method, payment_code):
 
-        # use hashlib instead of md5
-
         # the check with all maksunapit is the same, we could somehow
         # abstract this
 
         # FIXME: store an audit event here
 
-        payment = None # FIXME
-
-        MAC = "SOLOPMT_RETURN_MAC"
-        MACP = (
-            ("SOLOPMT_RETURN_VERSION", 'GET',),
-            ("SOLOPMT_RETURN_STAMP",'GET',),
-            ("SOLOPMT_RETURN_REF",'GET',),
-            ("SOLOPMT_RETURN_PAID", 'GET',),
-            ("merchant_secret", "processor",),
-        )
-        MAC_SEPARATOR = "&"
-
         m = md5.new()
-        for (var, source) in MACP:
+        for (var, source) in self.PAYMENT_RESP_PARAMS:
             if source == 'GET':
                 m.update(request.GET.get(var, ''))
             elif source == 'POST':
                 m.update(request.POST.get(var, ''))
             elif source == 'processor':
-                m.update(payment.get_value(var))
+                m.update(self.PARAMETERS[var])
             else:
                 pass
             m.update("&")
 
-        return_mac = request.GET.get("SOLOPMT_RETURN_MAC", "")
+        return_mac = request.GET.get(self.PAYMENT_RESP_MAC, '')
         if m.hexdigest().upper() != return_mac.upper():
-            raise PaymentProcessingError("Return MAC doesn't match!")
+            # FIXME: Activate the raise here!
+            # raise PaymentProcessingError("Return MAC doesn't match!")
+            pass
 
-        # checked validity of the return
+        
+
+        # FIXME: should lookup the payment and call its clearead method
+
+        # FIXME: all ok, now need to do a redirect
 
         # then use super to send the signal? (but paypal doesn't work
         # that way)

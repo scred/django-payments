@@ -16,6 +16,8 @@ class NordeaPaymentProcessor(MaksunapitPaymentProcessor):
       merchant_account = "29501800000014"
     """
 
+    METHOD = "nordea"
+
     PREFIX = "SOLOPMT_"
 
     PARAMETERS = {}
@@ -54,23 +56,34 @@ class NordeaPaymentProcessor(MaksunapitPaymentProcessor):
         "MSG": "message",
     }
 
+    DATA_URLS = {
+        "RETURN": "success",
+        "CANCEL": "cancel",
+        "REJECT": "error",
+    }
+
     PAYMENT_REQ_MAC = "MAC"
     PAYMENT_REQ_PARAMS = (
-        ("SOLOPMT_VERSION", "data"), # 
-        ("SOLOPMT_STAMP", "data"), # SOLOPMT_STAMP
-        ("SOLOPMT_RCV_ID", "data"), # SOLOPMT_RCV_ID
-        ("SOLOPMT_AMOUNT", "data"), # SOLOPMT_AMOUNT
-        ("SOLOPMT_REF", "data"), # SOLOPMT_REF
-        ("SOLOPMT_DATE", "data"), # SOLOPMT_DATE
-        ("SOLOPMT_CUR", "data"), # SOLOPMT_CUR
+        ("SOLOPMT_VERSION", "data"),
+        ("SOLOPMT_STAMP", "data"),
+        ("SOLOPMT_RCV_ID", "data"),
+        ("SOLOPMT_AMOUNT", "data"),
+        ("SOLOPMT_REF", "data"),
+        ("SOLOPMT_DATE", "data"),
+        ("SOLOPMT_CUR", "data"),
         ("merchant_secret", "processor"),
     )
     PAYMENT_REQ_SEPARATOR = "&"
 
-    # urls
-    # RETURN
-    # CANCEL
-    # REJECT
+    PAYMENT_RESP_MAC = "SOLOPMT_RETURN_MAC"
+    PAYMENT_RESP_PARAMS = (
+        ("SOLOPMT_RETURN_VERSION", "GET"),
+        ("SOLOPMT_RETURN_STAMP","GET"),
+        ("SOLOPMT_RETURN_REF", "GET"),
+        ("SOLOPMT_RETURN_PAID", "GET"),
+        ("merchant_secret", "processor"),
+    )
+    PAYMENT_RESP_SEPARATOR = "&"
 
     # KEYVERS: ??
     
@@ -83,4 +96,4 @@ class NordeaPaymentProcessor(MaksunapitPaymentProcessor):
     # classmethods needed for setting fixed merchant parameters (done
     # in eg settings.py)
 
-PaymentProcessor.register_processor("nordea", NordeaPaymentProcessor)
+PaymentProcessor.register_processor(NordeaPaymentProcessor)

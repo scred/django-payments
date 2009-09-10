@@ -11,6 +11,8 @@ class SampoPaymentProcessor(MaksunapitPaymentProcessor):
       merchant_secret = "jumCLB4T2ceZWGJ9ztjuhn5FaeZnTm5HpfDXWU2APRqfDcsrBs8mqkFARzm7uXKd"
     """
 
+    METHOD = "sampo"
+
     PREFIX = ""
 
     PARAMETERS = {}
@@ -43,6 +45,11 @@ class SampoPaymentProcessor(MaksunapitPaymentProcessor):
         "VIITE": "fi_reference",
     }
 
+    DATA_URLS = {
+        "OKURL": "success",
+        "VIRHEURL": "error",
+    }
+
     PAYMENT_REQ_MAC = "TARKISTE"
     PAYMENT_REQ_PARAMS = (
         ("merchant_secret", "processor"),
@@ -51,12 +58,21 @@ class SampoPaymentProcessor(MaksunapitPaymentProcessor):
         ("KNRO", "data"),
         ("VERSIO", "data"),
         ("VALUUTTA", "data"),
-        # ("OKURL", "data"), # FIXME
-        # ("VIRHEURL", "data"), # FIXME
+        ("OKURL", "data"),
+        ("VIRHEURL", "data"),
     )
     PAYMENT_REQ_SEPARATOR = ""
 
-    # OKURL
-    # VIRHEURL
+    PAYMENT_RESP_MAC = "TARKISTE"
+    PAYMENT_RESP_PARAMS = (
+        ("merchant_secret", "processor"),
+        ("VIITE", "POST"),
+        ("SUMMA", "POST"),
+        ("STATUS", "POST"),
+        ("KNRO", "POST"),
+        ("VERSIO", "POST"),
+        ("VALUUTTA", "POST"),
+    )
+    PAYMENT_RESP_SEPARATOR = ""
 
-PaymentProcessor.register_processor("sampo", SampoPaymentProcessor)
+PaymentProcessor.register_processor(SampoPaymentProcessor)

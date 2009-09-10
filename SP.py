@@ -24,7 +24,7 @@ class Payment():
     # after clearing: method that was used
 
     @classmethod
-    def register_storage(self, klass):
+    def set_storage(self, klass):
         self.storage = klass
 
     def __init__(self, **kwargs):

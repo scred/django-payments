@@ -1,8 +1,9 @@
-# class to write auditing events, give this to PaymentProcessor in init.
-# or rather you give a sub-class of this where you override stuff
-
 class PaymentAuditEvent():
-
+    """
+    Class to write auditing events, give this to PaymentProcessor in init.
+    Or rather you give a sub-class of this where you override stuff.
+    """
+    
     @staticmethod
     def store_audit_event(event_type, payment_method, payment_code, data):
         """

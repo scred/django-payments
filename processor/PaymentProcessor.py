@@ -3,11 +3,11 @@ class PaymentProcessor():
     payment_processors = {}
 
     @classmethod
-    def register_processor(self, kind, klass):
+    def register_processor(self, klass):
         """
         Register a new payment processor sub-class.
         """
-        self.payment_processors[kind] = klass
+        self.payment_processors[klass.METHOD] = klass
 
     @classmethod
     def get_processor(self, kind):
@@ -66,24 +66,21 @@ class PaymentProcessor():
             value = payment.get_value(value)
             data["%s%s" % (self.PREFIX, key)] = value
 
+        # FIXME: The URLs set are missing the protocol and host/port parts!
+
+        # set return urls
+        for key, value in self.DATA_URLS.items():
+            key = "%s%s" % (self.PREFIX, key)
+            value = "/payment/%s/%s/%s/" % \
+                (value, self.METHOD, payment.code)
+            data[key] = value                
+
         # get custom data
         data.update(self.checkout_hash(data))
 
         # FIXME: Itemized cart data for Paypal et al is not done.
             
         return data
-
-    @classmethod
-    def custom_form_params(self, payment):
-        """
-        Custom parameters for the checkout form. Override as
-        appropriate in a payment processor class. Should return a dict
-        where keys and values are strings.
-        """
-
-        # FIXME: deprecated
-        
-        return {}
 
     @classmethod
     def success(self, request, payment_method, payment_code):
@@ -99,3 +96,7 @@ def success_view(request, payment_method, payment_code):
 
     pp = PaymentProcessor.get_processor(payment_method)
     return pp.success(request, payment_method, payment_code)
+
+class PaymentProcessingError(Exception):
+
+    pass

@@ -5,7 +5,7 @@ An example and testing script. Creates a payment and retrieves a
 payment form for each method set for the payment.
 """
 
-from processor import PaymentProcessor
+from processor import PaymentProcessor, success_view
 from SP import PickledPayment
 
 # initialize payment processors with test credentials
@@ -34,7 +34,14 @@ payment.set_value("message", "Payment test!")
 payment.set_value("amount", "42.00")
 payment.set_value("fi_reference", "1070")
 
+# print payment.get_checkout_forms()
 
+# simulated return from the bank
 
-print payment.get_checkout_forms()
+from django.http import HttpRequest
 
+request = HttpRequest()
+request.GET = {}
+request.POST = {}
+
+print success_view(request, "nordea", payment.code)
