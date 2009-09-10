@@ -16,8 +16,8 @@ class NordeaPaymentProcessor(MaksunapitPaymentProcessor):
       merchant_account = "29501800000014"
 
     Client credentials for testing:
-      username = "??"
-      password = "??"      
+      username = anything goes / automatically populated
+      password = anything goes / automatically populated
     """
 
     METHOD = "nordea"
@@ -32,6 +32,8 @@ class NordeaPaymentProcessor(MaksunapitPaymentProcessor):
         "SOLOPMT_CONFIRM": "YES",
         "SOLOPMT_DATE": "EXPRESS",
     }
+
+    # FIXME: KEYVERS: needed or not
 
     DATA_MERCHANT = {
         "SOLOPMT_RCV_ID": "merchant_key",
@@ -89,7 +91,5 @@ class NordeaPaymentProcessor(MaksunapitPaymentProcessor):
         ("merchant_secret", "processor"),
     )
     PAYMENT_RESP_SEPARATOR = "&"
-
-    # KEYVERS: ??
 
 PaymentProcessor.register_processor(NordeaPaymentProcessor)

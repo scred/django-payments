@@ -39,20 +39,30 @@ PaymentProcessor.set_parameters("samlink", {
     "return_url": "/order/%s/",
 })
 
+PaymentProcessor.set_parameters("tapiola", {
+    "merchant_key": "TAPESHOPID",
+    "merchant_secret": "PAPUKAIJA",
+    "merchant_account": "2019363630-01652643",
+    "merchant_name": "Company Ltd",
+    "return_url": "/order/%s/",
+})
+
 Payment.set_storage(PickledStorage)
 
 # create a payment instance
 
-payment = Payment(code="1234")
-payment.set_payment_methods(("nordea", "sampo", "op", "samlink"))
+payment = Payment(code="1998052212254471")
+#payment.set_payment_methods(["nordea", "sampo", "op", "samlink", "tapiola"])
+payment.set_payment_methods(["nordea"])
 payment.set_value("currency", "EUR")
 payment.set_value("language", "en")
 payment.set_value("message", "Payment test!")
-payment.set_value("amount", "42.00")
-payment.set_value("fi_reference", "1070")
+payment.set_value("amount", "570,00")
+payment.set_value("fi_reference", "55")
 payment.save()
 
-print payment.get_checkout_forms()["samlink"]
+for key, value in payment.get_checkout_forms()["nordea"].items():
+    print "%s = %s" % (key, value)
 
 # simulated return from the bank
 

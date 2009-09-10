@@ -84,8 +84,6 @@ class Payment():
         #print "payment two:", payment        
         return payment
 
-    
-
 class PickledStorage():
 
     @classmethod
@@ -108,6 +106,6 @@ class PickledStorage():
     @classmethod
     def load(self, payment):
         import pickle
-        fh = open("%s.pickle" % payment.code, "r")
+        fh = open("/tmp/%s.pickle" % payment.code, "r")
         payment.values = pickle.load(fh)
         fh.close()

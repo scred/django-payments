@@ -22,6 +22,11 @@ class PaymentProcessor():
         pp.PARAMETERS = data
         # FIXME: should have an add parameter thing as well
 
+    @classmethod
+    def get_parameter(self, key):
+        import settings
+        return getattr(settings, "PAYMENT_PROCESSORS")[self.METHOD][key]
+
     def __init__(FIXME):
 
         # params:
@@ -45,7 +50,7 @@ class PaymentProcessor():
 
         # set fixed merchant data
         for key, value in self.DATA_MERCHANT.items():
-            value = self.PARAMETERS[value]
+            value = self.get_parameter(value)
             data[key] = value
 
         # set language
@@ -67,9 +72,11 @@ class PaymentProcessor():
 
         # FIXME: The URLs set are missing the protocol and host/port parts!
 
+        # FIXME: Are not, but they're hardwired!
+
         # set return urls
         for key, value in self.DATA_URLS.items():
-            value = "/payment/%s/%s/%s/" % \
+            value = "http://localhost:8000/payment/%s/%s/%s/" % \
                 (value, self.METHOD, payment.code)
             data[key] = value                
 
@@ -96,12 +103,13 @@ def success_view(request, payment_method, payment_code):
     # FIXME: should probably do something different on error
 
     pp = PaymentProcessor.get_processor(payment_method)
+
+    print "foo:", pp.get_parameter("merchant_secret")
     try:        
         pp.success(request, payment_method, payment_code)
-        # return HttpResponseRedirect(pp.PARAMETERS["return_url"] % payment_code)
+        return HttpResponseRedirect(pp.get_parameter("return_url") % payment_code)
     except PaymentProcessingError:
-        # return HttpResponseRedirect(pp.PARAMETERS["return_url"] % payment_code)
-        pass
+        return HttpResponseRedirect(pp.get_parameter("return_url") % payment_code)
 
     # what about the refund hooks?
 
