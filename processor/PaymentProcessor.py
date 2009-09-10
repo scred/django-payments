@@ -41,39 +41,34 @@ class PaymentProcessor():
 
         # set payment method fixed data
         for key, value in self.DATA_FIXED.items():
-            data["%s%s" % (self.PREFIX, key)] = value
+            data[key] = value
 
         # set fixed merchant data
         for key, value in self.DATA_MERCHANT.items():
             value = self.PARAMETERS[value]
-            data["%s%s" % (self.PREFIX, key)] = value
+            data[key] = value
 
         # set language
-        data["%s%s" % (self.PREFIX, self.LANGUAGE_PARAM)] = \
-            self.LANGUAGE_DEFAULT
+        data[self.LANGUAGE_PARAM] = self.LANGUAGE_DEFAULT
         language = payment.get_value("language")
         if language and language in self.LANGUAGE:
-            data["%s%s" % (self.PREFIX, self.LANGUAGE_PARAM)] = \
-                self.LANGUAGE[language]
+            data[self.LANGUAGE_PARAM] = self.LANGUAGE[language]
 
         # set currency
-        data["%s%s" % (self.PREFIX, self.CURRENCY_PARAM)] = \
-            self.CURRENCY_DEFAULT
+        data[self.CURRENCY_PARAM] = self.CURRENCY_DEFAULT
         currency = payment.get_value("currency")
         if currency and currency in self.CURRENCY:
-            data["%s%s" % (self.PREFIX, self.CURRENCY_PARAM)] = \
-                self.CURRENCY[currency]
+            data[self.CURRENCY_PARAM] = self.CURRENCY[currency]
 
         # set variable payment data
         for key, value in self.DATA_PAYMENT.items():
             value = payment.get_value(value)
-            data["%s%s" % (self.PREFIX, key)] = value
+            data[key] = value
 
         # FIXME: The URLs set are missing the protocol and host/port parts!
 
         # set return urls
         for key, value in self.DATA_URLS.items():
-            key = "%s%s" % (self.PREFIX, key)
             value = "/payment/%s/%s/%s/" % \
                 (value, self.METHOD, payment.code)
             data[key] = value                

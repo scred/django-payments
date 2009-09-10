@@ -8,7 +8,7 @@ class OpPaymentProcessor(MaksunapitPaymentProcessor):
     Region(s): FI
 
     Specifications:
-      ?? (in Finnish, PDF)
+      http://bit.ly/1ZsMGk (in Finnish, HTML)
     
     Merchant credentials for testing:
       merchant_key = "Esittelymyyja"
@@ -21,8 +21,6 @@ class OpPaymentProcessor(MaksunapitPaymentProcessor):
 
     METHOD = "op"
     URL = "https://kultaraha.op.fi/cgi-bin/krcgi"
-
-    PREFIX = ""
 
     PARAMETERS = {}
 

@@ -19,27 +19,25 @@ class NordeaPaymentProcessor(MaksunapitPaymentProcessor):
     METHOD = "nordea"
     URL = "FIXME"
 
-    PREFIX = "SOLOPMT_"
-
     PARAMETERS = {}
 
     DATA_FIXED = {
-        "VERSION": "0003",
-        "CONFIRM": "YES",
-        "DATE": "EXPRESS",
+        "SOLOPMT_VERSION": "0003",
+        "SOLOPMT_CONFIRM": "YES",
+        "SOLOPMT_DATE": "EXPRESS",
     }
 
     DATA_MERCHANT = {
-        "RCV_ID": "merchant_key",
-        "RCV_NAME": "merchant_name",
-        "RCV_ACCOUNT": "merchant_account",
+        "SOLOPMT_RCV_ID": "merchant_key",
+        "SOLOPMT_RCV_NAME": "merchant_name",
+        "SOLOPMT_RCV_ACCOUNT": "merchant_account",
         # "merchant_secret"
     }
 
     CURRENCY = {
         "EUR": "EUR",
     }
-    CURRENCY_PARAM = "CUR"
+    CURRENCY_PARAM = "SOLOPMT_CUR"
     CURRENCY_DEFAULT = "EUR"
 
     LANGUAGE = {
@@ -47,20 +45,20 @@ class NordeaPaymentProcessor(MaksunapitPaymentProcessor):
         "sv": "2",
         "en": "3",
     }
-    LANGUAGE_PARAM = "LANGUAGE"
+    LANGUAGE_PARAM = "SOLOPMT_LANGUAGE"
     LANGUAGE_DEFAULT = "en"
 
     DATA_PAYMENT = {
-        "AMOUNT": "amount",
-        "STAMP": "code",
-        "REF": "fi_reference",
-        "MSG": "message",
+        "SOLOPMT_AMOUNT": "amount",
+        "SOLOPMT_STAMP": "code",
+        "SOLOPMT_REF": "fi_reference",
+        "SOLOPMT_MSG": "message",
     }
 
     DATA_URLS = {
-        "RETURN": "success",
-        "CANCEL": "cancel",
-        "REJECT": "error",
+        "SOLOPMT_RETURN": "success",
+        "SOLOPMT_CANCEL": "cancel",
+        "SOLOPMT_REJECT": "error",
     }
 
     PAYMENT_REQ_MAC = "MAC"
