@@ -9,12 +9,17 @@
 
     <p>Pay now: One billion dolaars!</p>
 
-    {% for method, form in forms.items %}
-    <form method="post" action="https://solo3.nordea.fi/cgi-bin/SOLOPM01">
-      {% for key, value in form.items %}
+    {% for method, data in forms.items %}
+    <form method="post" action="{{ data.url }}">
+      {% for key, value in data.form.items %}
       <input type="hidden" name="{{ key }}" value="{{ value }}">
       {% endfor %}
       <input type="submit" name="submit" value="{{ method }}">
+      {% if data.tested %}
+      <p>{{ method }}: tested and works</p>
+      {% else %}
+      <p>{{ method }}: not tested</p>
+      {% endif %}
     </form>
     {% endfor %}
 

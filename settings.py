@@ -111,7 +111,7 @@ PAYMENT_PROCESSORS = {
     "tapiola": {
         "merchant_key": "TAPESHOPID",
         "merchant_secret": "PAPUKAIJA",
-        "merchant_account": "2019363630-01652643",
+        "merchant_account": "363630-01652643",
         "merchant_name": "Company Ltd",
         "return_url": "/order/%s/",
     },

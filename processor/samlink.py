@@ -16,8 +16,8 @@ class SamlinkPaymentProcessor(MaksunapitPaymentProcessor):
       merchant_account = "448710-126"
 
     Client credentials for testing:
-      username = "??"
-      password = "??"      
+      username = "11111111"
+      password = "123456"
     """
 
     METHOD = "samlink"

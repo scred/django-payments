@@ -21,11 +21,12 @@ class TapiolaPaymentProcessor(MaksunapitPaymentProcessor):
     Merchant credentials for testing:
       merchant_key = "TAPESHOPID"
       merchant_secret = "PAPUKAIJA"
-      merchant_account = "2019363630-01652643"
+      merchant_account = "363630-01652643"
 
     Client credentials for testing:
       username = "12345678"
-      password = "999"      
+      password = "123TAP"
+      token = "9999"
     """
 
     METHOD = "tapiola"
