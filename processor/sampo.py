@@ -12,6 +12,7 @@ class SampoPaymentProcessor(MaksunapitPaymentProcessor):
     """
 
     METHOD = "sampo"
+    URL = "FIXME"
 
     PREFIX = ""
 

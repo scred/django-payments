@@ -17,6 +17,7 @@ class NordeaPaymentProcessor(MaksunapitPaymentProcessor):
     """
 
     METHOD = "nordea"
+    URL = "FIXME"
 
     PREFIX = "SOLOPMT_"
 

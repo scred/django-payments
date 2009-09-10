@@ -26,12 +26,18 @@ PaymentProcessor.set_parameters("sampo", {
     "return_url": "/order/%s/",
 })
 
+PaymentProcessor.set_parameters("op", {
+    "merchant_key": "Esittelymyyja",
+    "merchant_secret": "Esittelykauppiaansalainentunnus",
+    "return_url": "/order/%s/",
+})
+
 Payment.set_storage(PickledStorage)
 
 # create a payment instance
 
 payment = Payment(code="1234")
-payment.set_payment_methods(("nordea", "sampo"))
+payment.set_payment_methods(("nordea", "sampo", "op"))
 payment.set_value("currency", "EUR")
 payment.set_value("language", "en")
 payment.set_value("message", "Payment test!")
@@ -39,7 +45,7 @@ payment.set_value("amount", "42.00")
 payment.set_value("fi_reference", "1070")
 payment.save()
 
-# print payment.get_checkout_forms()
+print payment.get_checkout_forms()["op"]
 
 # simulated return from the bank
 
@@ -49,4 +55,4 @@ request = HttpRequest()
 request.GET = {}
 request.POST = {}
 
-print success_view(request, "nordea", payment.code)
+#print success_view(request, "nordea", payment.code)

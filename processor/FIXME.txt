@@ -1,3 +1,7 @@
 - Having the parameters as simply variables in the class context
   doesn't do well optional parameters. References to self.SOMETHING
   crash if SOMETHING is not defined.
+
+- Are the merchant secrets versioned? Do we need to store the version
+  of the secret as part of the merchant parameters instead of keeping
+  it as a fixed value as is done now. Check this from the vendor docs.
