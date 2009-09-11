@@ -32,12 +32,7 @@ class MaksunapitPaymentProcessor(PaymentProcessor):
         }
 
     @classmethod
-    def success(self, request, payment_method, payment_code):
-
-        # the check with all maksunapit is the same, we could somehow
-        # abstract this
-
-        # FIXME: store an audit event here
+    def success_check_mac(self, request, payment):
 
         s = ""
         for (var, source) in self.PAYMENT_RESP_PARAMS:
@@ -59,19 +54,8 @@ class MaksunapitPaymentProcessor(PaymentProcessor):
         print "MAC-B:", return_mac.upper()
 
         if m.hexdigest().upper() != return_mac.upper():
-            raise PaymentProcessingError("Return MAC doesn't match!")
+            raise PaymentInvalidMacError("Return MAC doesn't match!")
 
-        from SP import Payment
-
-        # FIXME: activate these two lines
-        # payment = Payment.lookup(payment_code)
-        # payment.success(self.METHOD)
-        
-        # print "payment:", payment
-        #print "payment:", type(payment)
-
-        # FIXME: all ok, now need to do a redirect
-
-        # should we check the payment value and stuff like that?
-
-        # who makes the call for audit?
+    @classmethod
+    def massage_amount(self, value):
+        return value.replace(".", ",")

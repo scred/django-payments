@@ -1,3 +1,5 @@
+from exceptions import PaymentProcessingError
+
 class PaymentProcessor():
     """
     Base class for different payment processors. Not to be used directly.
@@ -41,6 +43,9 @@ class PaymentProcessor():
 
     @classmethod
     def get_checkout_form(self, payment):
+
+        # FIXME: Need to somehow formalize this a bit and return an
+        # actual Django form instance.
         
         data = {}
 
@@ -65,9 +70,16 @@ class PaymentProcessor():
         if currency and currency in self.CURRENCY:
             data[self.CURRENCY_PARAM] = self.CURRENCY[currency]
 
+        # FIXME: This way of massaging the amount is a hack. Should be
+        # able to register on a per parameter basis these massaging
+        # functions for various payment parameters. That would allow
+        # for flexibility on a per payment method basis.
+
         # set variable payment data
-        for key, value in self.DATA_PAYMENT.items():
-            value = payment.get_value(value)
+        for key, var in self.DATA_PAYMENT.items():
+            value = payment.get_value(var)
+            if var == 'amount':
+                value = self.massage_amount(value)
             data[key] = value
 
         # FIXME: The URLs set are missing the protocol and host/port parts!
@@ -88,11 +100,53 @@ class PaymentProcessor():
         return data
 
     @classmethod
-    def success(self, request, payment_method, payment_code):
-        raise NotImplementedError("method not implemented for the processor")
+    def massage_amount(self, value):
+        return value
 
-class PaymentProcessingError(Exception):
-    pass
+    @classmethod
+    def success(self, request, payment):
+        """
+        Returned with success URL from the payment processor. Checking
+        for return parameters and saving payment status need to be
+        done.
+        """
+
+        # call processor hooks
+
+        self.success_check_mac(request, payment)
+        self.success_check_custom(request, payment)
+        # ...
+        
+        from SP import Payment
+
+        # FIXME: activate these two lines
+        # payment = Payment.lookup(payment_code)
+        # payment.success(self.METHOD)
+        
+        # print "payment:", payment
+        #print "payment:", type(payment)
+
+        # FIXME: all ok, now need to do a redirect
+
+        # should we check the payment value and stuff like that?
+
+        # who makes the call for audit?
+
+    @classmethod
+    def success_check_mac(self, request, payment):
+        """
+        Checks the payment success return parameters (GET or POST) and
+        the associated MAC provided by the payment processor.
+
+        If MAC checking is not required, do not define this method for
+        the processing class. If MAC is invalid, the the method should
+        raise PaymentInvalidMacError.
+        """
+        pass
+
+    @classmethod
+    def success_check_custom(self, request, payment):
+        pass
 
 from django.http import HttpResponseRedirect
 
@@ -104,9 +158,15 @@ def success_view(request, payment_method, payment_code):
 
     pp = PaymentProcessor.get_processor(payment_method)
 
+    # FIXME: lookup the payment here
+
+    payment = payment_code
+
+
     print "foo:", pp.get_parameter("merchant_secret")
-    try:        
-        pp.success(request, payment_method, payment_code)
+    try:
+        
+        pp.success(request, payment)
         return HttpResponseRedirect(pp.get_parameter("return_url") % payment_code)
     except PaymentProcessingError:
         return HttpResponseRedirect(pp.get_parameter("return_url") % payment_code)

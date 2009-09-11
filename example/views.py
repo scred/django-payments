@@ -24,6 +24,7 @@ def checkout(request):
         ("sampo", False),
         ("op", True),
         ("samlink", True),
+        ("luottokunta", False),
     )
 
     code = datetime.datetime.now().strftime("%H%M%S")
@@ -33,7 +34,7 @@ def checkout(request):
     payment.set_value("currency", "EUR")
     payment.set_value("language", "fi")
     payment.set_value("message", "Payment test!")
-    payment.set_value("amount", "456,23")
+    payment.set_value("amount", "456.23")
     payment.set_value("fi_reference", "55")
     payment.save()
 

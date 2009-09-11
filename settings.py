@@ -82,6 +82,10 @@ INSTALLED_APPS = (
 
 # FIXME: having return url here is no good
 
+# Settings for payment processors for testing purposes. Override these
+# with production merchant credentials in local_settings.py or
+# similar.
+
 PAYMENT_PROCESSORS = {
     "nordea": {
         "merchant_key": "12345678",
@@ -116,3 +120,8 @@ PAYMENT_PROCESSORS = {
         "return_url": "/order/%s/",
     },
 }
+
+# FIXME: not checked anywhere yet
+ENABLED_PAYMENT_PROCESSORS = ()
+
+from local_settings import *

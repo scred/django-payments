@@ -9,6 +9,14 @@
 # do we need a payment data storage class
 # the storage class needs to be registered for the payment class
 
+# FIXME: Maybe do this by sub-classing instead of having storage
+# classes, ie the sub-classes have the requirement to do
+# storage. Could also have different types of payments that eg support
+# carts. Processors could require specific types of payments.
+
+# FIXME: processors should have support for mandatory and optional
+# parameters
+
 from processor import PaymentProcessor
 
 class Payment():

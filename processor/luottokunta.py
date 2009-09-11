@@ -1,3 +1,4 @@
+import md5
 from processor import PaymentProcessor
 
 class LuottokuntaPaymentProcessor(PaymentProcessor):
@@ -23,7 +24,7 @@ class LuottokuntaPaymentProcessor(PaymentProcessor):
 
     METHOD = "luottokunta"
 
-    URL = "FIXME"
+    URL = "https://dmp2.luottokunta.fi/dmp/html_payments"
     BUTTON_URL = "FIXME"
 
     PARAMETERS = {}
@@ -31,18 +32,11 @@ class LuottokuntaPaymentProcessor(PaymentProcessor):
     DATA_FIXED = {
         "Card_Details_Transmit": "0",
         "Device_Category": "1",
-        "Transaction_
-        #"SOLOPMT_VERSION": "0003",
-        #"SOLOPMT_CONFIRM": "YES",
-        #"SOLOPMT_DATE": "EXPRESS",
+        "Transaction_Type": "1",
     }
-
-    # FIXME: KEYVERS: needed or not
 
     DATA_MERCHANT = {
         "Merchant_Number": "merchant_key",
-        #"SOLOPMT_RCV_NAME": "merchant_name",
-        #"SOLOPMT_RCV_ACCOUNT": "merchant_account",
         # "merchant_secret"
     }
 
@@ -61,41 +55,85 @@ class LuottokuntaPaymentProcessor(PaymentProcessor):
     LANGUAGE_DEFAULT = "en"
 
     DATA_PAYMENT = {
-        "Order_ID", "code",
-        #"Customer_ID", "FIXME", 
-
+        "Order_ID": "code",
+        "Customer_ID": "fi_reference", 
+        "Order_Description": "message",
         "Amount": "amount",
-        #"SOLOPMT_REF": "fi_reference",
-        #"SOLOPMT_MSG": "message",
     }
 
     DATA_URLS = {
-        #"SOLOPMT_RETURN": "success",
-        #"SOLOPMT_CANCEL": "cancel",
-        #"SOLOPMT_REJECT": "error",
+        "Success_Url": "success",
+        "Cancel_Url": "cancel",
+        "Failure_Url": "error",
     }
 
-    PAYMENT_REQ_MAC = "SOLOPMT_MAC"
+    PAYMENT_REQ_MAC = "Authentication_Mac"
     PAYMENT_REQ_PARAMS = (
-        ("SOLOPMT_VERSION", "data"),
-        ("SOLOPMT_STAMP", "data"),
-        ("SOLOPMT_RCV_ID", "data"),
-        ("SOLOPMT_AMOUNT", "data"),
-        ("SOLOPMT_REF", "data"),
-        ("SOLOPMT_DATE", "data"),
-        ("SOLOPMT_CUR", "data"),
+        ("Merchant_Number", "data"),
+        ("Order_ID", "data"),
+        ("Amount", "data"),
+        ("Transaction_Type", "data"),
         ("merchant_secret", "processor"),
     )
-    PAYMENT_REQ_SEPARATOR = "&"
+    PAYMENT_REQ_SEPARATOR = ""
 
-    PAYMENT_RESP_MAC = "SOLOPMT_RETURN_MAC"
+    PAYMENT_RESP_MAC = "LKMAC"
     PAYMENT_RESP_PARAMS = (
-        ("SOLOPMT_RETURN_VERSION", "GET"),
-        ("SOLOPMT_RETURN_STAMP","GET"),
-        ("SOLOPMT_RETURN_REF", "GET"),
-        ("SOLOPMT_RETURN_PAID", "GET"),
+        ("FIXME", "GET"),
         ("merchant_secret", "processor"),
     )
-    PAYMENT_RESP_SEPARATOR = "&"
+    PAYMENT_RESP_SEPARATOR = ""
+
+    @classmethod
+    def checkout_hash(self, data):
+
+        s = ""
+        for (var, source) in self.PAYMENT_REQ_PARAMS:
+            if source == "data":
+                s += data[var]
+            elif source == 'processor':
+                s += self.get_parameter(var)
+            else:
+                pass
+            s += self.PAYMENT_REQ_SEPARATOR
+
+        m = md5.new(s)
+
+        print "MAC string:", s
+        print "MAC digest:", m.hexdigest().upper()
+
+        return {
+            self.PAYMENT_REQ_MAC: m.hexdigest().upper(),
+        }
+
+    @classmethod
+    def success_check_mac(self, request, payment):
+
+        s = ""
+        for (var, source) in self.PAYMENT_RESP_PARAMS:
+            if source == 'GET':
+                s += request.GET.get(var, '')
+            elif source == 'POST':
+                s += request.POST.get(var, '')
+            elif source == 'processor':
+                print "parameters:", self.get_parameter(var)
+                s += self.get_parameter(var)
+            else:
+                pass
+            s += self.PAYMENT_RESP_SEPARATOR
+
+        m = md5.new(s)
+        return_mac = request.GET.get(self.PAYMENT_RESP_MAC, '')
+
+        print "MAC-A:", m.hexdigest().upper()
+        print "MAC-B:", return_mac.upper()
+
+        if m.hexdigest().upper() != return_mac.upper():
+            raise PaymentInvalidMacError("Return MAC doesn't match!")
+
+    @classmethod
+    def massage_amount(self, value):
+        return value.replace(".", "")
+
 
 PaymentProcessor.register_processor(LuottokuntaPaymentProcessor)

@@ -8,3 +8,5 @@ from sampo import SampoPaymentProcessor
 from op import OpPaymentProcessor
 from samlink import SamlinkPaymentProcessor
 from tapiola import TapiolaPaymentProcessor
+
+from luottokunta import LuottokuntaPaymentProcessor

@@ -22,3 +22,30 @@ BUGS
   necessary.
 
 - No support for the payment button images has been implemented.
+
+- No need to reinvent the wheel for auditing. Simply use Python's
+  logging to write audit entries.
+
+- There is no good need for having mandatory and optional parameters
+  for the Payment object. Eg, with the "luottokunta" interface the
+  "Customer_ID" is optional. We can have that as optional parameter
+  for the Payment.
+
+- Need to have customization for the amount. We always ask the amount
+  in the format "42.00", but some processors want to have comma
+  separated, instead ("42,00"). This should be a parameter for the
+  processor module.
+
+- Each processing module could indicate which hooks it wants to be
+  called. And then it could register hooks. So we could share hook
+  implementations between classes without doing subclassing. Would be
+  much more flexible and powerful that way.
+
+- Processing module hooks could define which parameters they need the
+  processing module to have defined. That way we can validate the
+  modules somewhat automatically.
+
+- Can't set multiple sets of merchant credentials for one specific
+  payment processor in one installation. Doesn't work if you wanted to
+  use this code in a hosted, multi-tenant webshop scenario. Not sure
+  if that is a design goal, though.
