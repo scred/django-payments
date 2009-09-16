@@ -119,6 +119,13 @@ PAYMENT_PROCESSORS = {
         "merchant_name": "Company Ltd",
         "return_url": "/order/%s/",
     },
+    "spankki": {
+        "merchant_key": "SPANKKIESHOPID",
+        "merchant_secret": "SPANKKI",
+        "merchant_account": "393900-01002369",
+        "merchant_name": "Company Ltd",
+        "return_url": "/order/%s/",
+    },    
 }
 
 # FIXME: not checked anywhere yet

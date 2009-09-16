@@ -25,6 +25,7 @@ def checkout(request):
         ("op", True),
         ("samlink", True),
         ("luottokunta", False),
+        ("spankki", False),
     )
 
     code = datetime.datetime.now().strftime("%H%M%S")

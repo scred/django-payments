@@ -27,7 +27,8 @@ class PaymentProcessor():
     @classmethod
     def get_parameter(self, key):
         import settings
-        return getattr(settings, "PAYMENT_PROCESSORS")[self.METHOD][key]
+        return settings.PAYMENT_PROCESSORS[self.METHOD][key]
+        # return getattr(settings, "PAYMENT_PROCESSORS")[self.METHOD][key]
 
     def __init__(FIXME):
 
@@ -83,12 +84,11 @@ class PaymentProcessor():
             data[key] = value
 
         # FIXME: The URLs set are missing the protocol and host/port parts!
-
         # FIXME: Are not, but they're hardwired!
 
         # set return urls
         for key, value in self.DATA_URLS.items():
-            value = "http://localhost:8000/payment/%s/%s/%s/" % \
+            value = "http://localhost:8001/payment/%s/%s/%s/" % \
                 (value, self.METHOD, payment.code)
             data[key] = value                
 
@@ -112,7 +112,6 @@ class PaymentProcessor():
         """
 
         # call processor hooks
-
         self.success_check_mac(request, payment)
         self.success_check_custom(request, payment)
         # ...
