@@ -36,12 +36,12 @@ Supported payment systems
     - Sampo          ("sampo")
     - Osuuspankki    ("op")
     - Aktia/POP/SP   ("samlink")
-    - Ålandsbanken   [under construction]
+    - Ålandsbanken   ("spankki")
     - S-Pankki       [under construction]
 
   - Finland (and Scandinavia), credit card processors:
 
-    - Luottokunta    [planned]
+    - Luottokunta    [under construction]
     - DIBS           [planned]
 
   - Finland, payment aggregators:
