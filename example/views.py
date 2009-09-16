@@ -29,13 +29,13 @@ def checkout(request):
     )
 
     code = datetime.datetime.now().strftime("%H%M%S")
-    code = "1234567890"
+    code = "1234567891"
     payment = Payment(code=code)
     payment.set_payment_methods([m[0] for m in methods])
     payment.set_value("currency", "EUR")
     payment.set_value("language", "fi")
     payment.set_value("message", "Payment test!")
-    payment.set_value("amount", "456.23")
+    payment.set_value("amount", "1.00")
     payment.set_value("fi_reference", "55")
     payment.save()
 

@@ -1,5 +1,6 @@
 import md5
 from processor import PaymentProcessor
+from processor.exceptions import PaymentInvalidMacError
 
 class LuottokuntaPaymentProcessor(PaymentProcessor):
 
@@ -12,10 +13,10 @@ class LuottokuntaPaymentProcessor(PaymentProcessor):
       ?? (in Finnish, PDF)
     
     Merchant credentials for testing:
-      merchant_key = "??"
-      merchant_secret = "??"
-      merchant_account = "??"
-
+      Not available. You need to use production credentials, but
+      request Luottokunta to set the gateway to testing mode for your
+      merchant key.
+      
     Client credentials for testing:
       Use valid credit card and cancel charges from the admin UI, or
       alternatively contact Luottokunta to set the gateway for
@@ -79,8 +80,12 @@ class LuottokuntaPaymentProcessor(PaymentProcessor):
 
     PAYMENT_RESP_MAC = "LKMAC"
     PAYMENT_RESP_PARAMS = (
-        ("FIXME", "GET"),
         ("merchant_secret", "processor"),
+        ("1", "fixed"), # Transaction_Type
+        ("amount", "payment"), # Amount
+        #("100", "fixed"), # Amount        
+        ("code", "payment"), # Order_ID
+        ("merchant_key", "processor"), # Merchant_Number
     )
     PAYMENT_RESP_SEPARATOR = ""
 
@@ -99,15 +104,19 @@ class LuottokuntaPaymentProcessor(PaymentProcessor):
 
         m = md5.new(s)
 
-        print "MAC string:", s
-        print "MAC digest:", m.hexdigest().upper()
+        #print "MAC string:", s
+        #print "MAC digest:", m.hexdigest().upper()
 
         return {
             self.PAYMENT_REQ_MAC: m.hexdigest().upper(),
         }
 
+    # http://localhost:8001/payment/success/luottokunta/1234567890/?LKMAC=CD680E8BA57C77D2AB149F292635D237
+
     @classmethod
     def success_check_mac(self, request, payment):
+
+        print "check mac: payment:", payment.get_value("amount")
 
         s = ""
         for (var, source) in self.PAYMENT_RESP_PARAMS:
@@ -116,8 +125,15 @@ class LuottokuntaPaymentProcessor(PaymentProcessor):
             elif source == 'POST':
                 s += request.POST.get(var, '')
             elif source == 'processor':
-                print "parameters:", self.get_parameter(var)
                 s += self.get_parameter(var)
+            elif source == 'payment':
+                value = payment.get_value(var)
+                if var == 'amount':
+                    value = self.massage_amount(value)
+                s += value
+                
+            elif source == 'fixed':
+                s += var
             else:
                 pass
             s += self.PAYMENT_RESP_SEPARATOR
@@ -128,12 +144,13 @@ class LuottokuntaPaymentProcessor(PaymentProcessor):
         print "MAC-A:", m.hexdigest().upper()
         print "MAC-B:", return_mac.upper()
 
+        print "MAC-s:", s
+
         if m.hexdigest().upper() != return_mac.upper():
             raise PaymentInvalidMacError("Return MAC doesn't match!")
 
     @classmethod
     def massage_amount(self, value):
         return value.replace(".", "")
-
 
 PaymentProcessor.register_processor(LuottokuntaPaymentProcessor)

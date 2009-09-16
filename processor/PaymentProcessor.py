@@ -159,8 +159,10 @@ def success_view(request, payment_method, payment_code):
 
     # FIXME: lookup the payment here
 
-    payment = payment_code
+    from SP import Payment, PickledStorage
+    Payment.set_storage(PickledStorage)
 
+    payment = Payment.lookup(payment_code)
 
     print "foo:", pp.get_parameter("merchant_secret")
     try:

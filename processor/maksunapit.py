@@ -24,8 +24,8 @@ class MaksunapitPaymentProcessor(PaymentProcessor):
 
         m = md5.new(s)
 
-        print "MAC string:", s
-        print "MAC digest:", m.hexdigest().upper()
+        #print "MAC string:", s
+        #print "MAC digest:", m.hexdigest().upper()
 
         return {
             self.PAYMENT_REQ_MAC: m.hexdigest().upper(),
@@ -41,7 +41,6 @@ class MaksunapitPaymentProcessor(PaymentProcessor):
             elif source == 'POST':
                 s += request.POST.get(var, '')
             elif source == 'processor':
-                print "parameters:", self.get_parameter(var)
                 s += self.get_parameter(var)
             else:
                 pass

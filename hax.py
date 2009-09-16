@@ -5,6 +5,7 @@ An example and testing script. Creates a payment and retrieves a
 payment form for each method set for the payment.
 """
 
+import sys
 from processor import PaymentProcessor, success_view
 from SP import Payment, PickledStorage
 
@@ -48,6 +49,11 @@ PaymentProcessor.set_parameters("tapiola", {
 })
 
 Payment.set_storage(PickledStorage)
+
+p = Payment.lookup("1234567890")
+print p.get_values()
+
+sys.exit(0)
 
 # create a payment instance
 

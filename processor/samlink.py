@@ -5,10 +5,14 @@ class SamlinkPaymentProcessor(MaksunapitPaymentProcessor):
     """
     Payment processor for Samlink SP/POP/AKTIA-maksu.
 
+    Note: With rather minor modifications this module would work also
+    with Handelsbanken who also use Samlink as a technology provider.
+
     Region(s): FI
 
     Specifications:
-      ?? (in Finnish, HTML)
+      ??
+      http://bit.ly/6XWNf (in Finnish, PDF) [Handelsbanken]
     
     Merchant credentials for testing:
       merchant_key = "0000000000"

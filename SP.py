@@ -78,6 +78,9 @@ class Payment():
     def set_value(self, key, value):
         return self.storage.set_value(self, key, value)
 
+    def get_values(self):
+        return self.storage.get_values(self)
+
     def save(self):
         return self.storage.save(self)
 
@@ -105,6 +108,10 @@ class PickledStorage():
         return value
 
     @classmethod
+    def get_values(self, payment):
+        return payment.values
+
+    @classmethod
     def save(self, payment):
         import pickle
         fh = open("%s.pickle" % payment.code, "w")
@@ -114,6 +121,6 @@ class PickledStorage():
     @classmethod
     def load(self, payment):
         import pickle
-        fh = open("/tmp/%s.pickle" % payment.code, "r")
+        fh = open("%s.pickle" % payment.code, "r")
         payment.values = pickle.load(fh)
         fh.close()
