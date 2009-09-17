@@ -78,6 +78,10 @@ class Payment():
         pp = PaymentProcessor.get_processor(payment_method)
         return pp.get_query_form(self) # FIXME: buggy method name
 
+    def refund(self, payment_method):
+        pp = PaymentProcessor.get_processor(payment_method)
+        return pp.get_refund_form(self) # FIXME: buggy method name
+
     def success(self, payment_method):
         
         self.set_value("__cleared", "true")

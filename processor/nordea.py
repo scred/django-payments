@@ -26,6 +26,7 @@ class NordeaPaymentProcessor(MaksunapitPaymentProcessor):
 
     URL = "https://solo3.nordea.fi/cgi-bin/SOLOPM01"
     QUERY_URL = "https://solo3.nordea.fi/cgi-bin/SOLOPM10"
+    REFUND_URL = "https://solo3.nordea.fi/cgi-bin/SOLOPM09"
     BUTTON_URL = "FIXME"
 
     PARAMETERS = {}
@@ -150,8 +151,8 @@ class NordeaPaymentProcessor(MaksunapitPaymentProcessor):
         #data["SOLOPMT_RESPDATA"] = "http://158.233.9.9/hsmok.htm" # FIXME
         data["SOLOPMT_RESPDATA"] = "text/xml" # FIXME
         #data["SOLOPMT_RESPDETL"] = "Y"
-#        data["SOLOPMT_STAMP"] = payment.get_value("code")
-        data["SOLOPMT_REF"] = payment.get_value("fi_reference")
+        data["SOLOPMT_STAMP"] = payment.get_value("code")
+#        data["SOLOPMT_REF"] = payment.get_value("fi_reference")
 #        data["SOLOPMT_AMOUNT"] = payment.get_value("amount")
 #        data["SOLOPMT_CUR"] = payment.get_value("currency")
         data["SOLOPMT_KEYVERS"] = "0001" # FIXME
@@ -236,6 +237,157 @@ class NordeaPaymentProcessor(MaksunapitPaymentProcessor):
         print "MAC-B", respmac
 
         # FIXME: check the mac!
+
+        # FIXME: Do something with the returned data!
+
+        return respdata
+
+    @classmethod
+    def get_refund_form(self, payment):
+
+        """
+        Refunds one Nordea payment in full.
+
+        Note that the refund operation executes another payment at the
+        bank and that those two payments are not explicitly linked. As
+        a result, if you query the original payment after refund, OK
+        is still returned.
+
+        More properly implemented refunds would actually return an
+        another Payment instance that describes the refund.
+
+        FIXME: Refund works in the sense that it executes the
+        refund. However, the response MAC calculation fails and the
+        calculated MAC doesn't match the returned one. No idea why
+        this is. As a result an exception is thrown even though
+        everything went a ok.
+        """
+
+        # FIXME: we need for parameters flexible forward and backwards
+        # parameter marshalling methods
+
+        #import httplib
+        #from urlparse import urlparse
+
+        print "refund() called"
+        
+        data = {}
+
+        data["SOLOPMT_VERSION"] = "0001"
+        data["SOLOPMT_TIMESTMP"] = "199911161024590003" # FIXME
+        data["SOLOPMT_RCV_ID"] = self.get_setting("merchant_key")
+        #data["SOLOPMT_LANGUAGE"] = payment.get_value("language")
+        data["SOLOPMT_LANGUAGE"] = "1" # FIXME
+        data["SOLOPMT_RESPTYPE"] = "xml" # "html" or "xml"
+        #data["SOLOPMT_RESPDATA"] = "http://158.233.9.9/hsmok.htm" # FIXME
+        data["SOLOPMT_RESPDATA"] = "text/xml" # FIXME
+        #data["SOLOPMT_RESPDETL"] = "Y"
+        data["SOLOPMT_STAMP"] = payment.get_value("code")
+        #data["SOLOPMT_REF"] = payment.get_value("fi_reference")
+        data["SOLOPMT_AMOUNT"] = payment.get_value("amount")
+        data["SOLOPMT_CUR"] = payment.get_value("currency")
+        #data["SOLOPMT_REF2"] = returned payment ref
+        data["SOLOPMT_KEYVERS"] = "0001" # FIXME
+        data["SOLOPMT_ALG"] = "01"
+
+        order = ("VERSION", "TIMESTMP", "RCV_ID", "LANGUAGE", "RESPTYPE",
+                 "RESPDATA", "RESPDETL", "STAMP", "REF", "AMOUNT", "CUR",
+                 "REF2", "KEYVERS", "ALG", "secret")
+
+#        order = ("VERSION", "TIMESTMP", "RCV_ID", "LANGUAGE", "RESPTYPE",
+#                 "RESPDATA", "RESPDETL", "STAMP",
+#                 #"REF", "AMOUNT", "CUR", 
+#                 "KEYVERS", "ALG", "secret")
+
+        s = ""
+        for p in order:
+            if p == "secret":
+                s += self.get_setting("merchant_secret") + "&"
+            else:
+                key = "SOLOPMT_%s" % p
+                if key in data:
+                    s += data[key] + "&"
+
+        #print "MAC:", s
+        #print "WANT:", "0001&199911161024590001&12345678&1&html&http://158.233.9.9/hsmok.htm&Y&501&0001&01&LEHTI&"
+
+        import md5
+        m = md5.new(s)
+        data["SOLOPMT_MAC"] = m.hexdigest().upper()
+
+        #print "pp.get_query_form() called"
+
+        print "MAC-0:", data["SOLOPMT_MAC"]
+
+        import urllib2
+        from urllib import urlencode
+        
+        con = urllib2.urlopen(self.REFUND_URL, urlencode(data))
+        resp = con.read()
+        #print resp
+
+        if False:
+            fh = open("nordea.xml", "w")
+            fh.write(resp)
+            fh.close()
+        else:
+            fh = open("nordea.xml", "r")
+            resp = fh.read()
+            fh.close()
+
+        #print resp
+
+        # https:///cgi-bin/SOLOPM10
+        #http = httplib.HTTPSConnection("solo3.nordea.fi", 443)
+        #http.putrequest("POST", "/cgi-bin/SOLOPM10")
+
+        from xml.etree.ElementTree import XML, SubElement
+
+        REFUND_RESP_PARAMS = (
+            "SOLOPMT_VERSION",
+            "SOLOPMT_TIMESTMP",
+            "SOLOPMT_RCV_ID",
+            "SOLOPMT_RESPCODE",
+            "SOLOPMT_STAMP",
+            "SOLOPMT_RCV_ACCOUNT",
+            "SOLOPMT_REF",
+            "SOLOPMT_DATE",
+            "SOLOPMT_AMOUNT",
+            "SOLOPMT_PAID",
+            "SOLOPMT_CUR", 
+            "SOLOPMT_STATUS",
+            "SOLOPMT_KEYVERS",
+            "SOLOPMT_ALG",
+        )
+
+        macs = ""
+        respdata = {}
+        xml = XML(resp)
+        for e in xml.getiterator():
+            if e.tag.startswith("SOLOPMT_"):
+                respdata[e.tag] = e.text
+
+        for p in REFUND_RESP_PARAMS:
+            if p in respdata:
+                macs += respdata[p] + "&"
+                print "USE:", p
+            else:
+                print "NOT:", p
+            # print "%s = %s" % (e.tag, e.text)
+        macs += self.get_setting("merchant_secret") + "&"
+
+        respmac = respdata["SOLOPMT_MAC"]
+
+        import md5
+        m = md5.new(macs)
+        print "macs", macs
+        print "MAC-A", m.hexdigest().upper()
+        print "MAC-B", respmac
+
+        from exceptions import PaymentInvalidMacError
+
+        if respmac != m.hexdigest().upper():
+            raise PaymentInvalidMacError("Response MAC is invalid.")
 
         return respdata
 

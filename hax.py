@@ -15,14 +15,15 @@ Payment.set_storage(PickledStorage)
 
 # create a payment instance
 
-payment = Payment(code="1998052212254471")
+payment = Payment(code="627")
+#payment = Payment(code="900")
 #payment.set_payment_methods(["nordea", "sampo", "op", "samlink", "tapiola"])
 payment.set_payment_methods(["paypal"])
 payment.set_value("currency", "EUR")
 payment.set_value("language", "en")
 payment.set_value("message", "Payment test!")
 payment.set_value("amount", "1,00")
-payment.set_value("fi_reference", "3748")
+#payment.set_value("fi_reference", "3751")
 payment.add_item(price="42.00", qty="4", tax="0", description="widget")
 payment.add_item(price="12.00", qty="2", tax="0", description="choco")
 payment.save()
@@ -32,7 +33,8 @@ payment.save()
 #for key, value in payment.get_checkout_forms()["paypal"].items():
 #    print "%s = %s" % (key, value)
 
-payment.query("nordea")
+#payment.query("nordea")
+payment.refund("nordea")
 
 # simulated return from the bank
 
