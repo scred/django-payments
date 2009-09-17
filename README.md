@@ -51,6 +51,10 @@ Supported payment systems
     - checkout.fi  [planned]
     - Maksuturva  [planned]
 
+  - Global:
+
+    - PayPal Website Payments Standard  [planned]
+
 Contributors
 ------------
 

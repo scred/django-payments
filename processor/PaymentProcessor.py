@@ -19,16 +19,17 @@ class PaymentProcessor():
         return self.payment_processors[kind]
 
     @classmethod
-    def set_parameters(self, payment_method, data):
-        pp = self.get_processor(payment_method)
-        pp.PARAMETERS = data
-        # FIXME: should have an add parameter thing as well
-
-    @classmethod
-    def get_parameter(self, key):
+    def get_setting(self, key):
         import settings
         return settings.PAYMENT_PROCESSORS[self.METHOD][key]
         # return getattr(settings, "PAYMENT_PROCESSORS")[self.METHOD][key]
+
+    @classmethod
+    def get_parameter(self, key):
+        try:
+            return getattr(self, key)
+        except AttributeError:
+            return None
 
     def __init__(FIXME):
 
@@ -56,7 +57,7 @@ class PaymentProcessor():
 
         # set fixed merchant data
         for key, value in self.DATA_MERCHANT.items():
-            value = self.get_parameter(value)
+            value = self.get_setting(value)
             data[key] = value
 
         # set language
@@ -95,9 +96,19 @@ class PaymentProcessor():
         # get custom data
         data.update(self.checkout_hash(data))
 
-        # FIXME: Itemized cart data for Paypal et al is not done.
+        print "USE_CART:", self.get_parameter("USE_CAR")
+
+        if self.get_parameter("USE_CART"):
+            items = payment.get_items()
+            for i in range(0, len(items)):
+                for key, value in self.DATA_CART.items():
+                    data[key % (i+1)] = items[i][value]
             
         return data
+
+    @classmethod
+    def checkout_hash(self, data):
+        return {}
 
     @classmethod
     def massage_amount(self, value):
@@ -164,13 +175,13 @@ def success_view(request, payment_method, payment_code):
 
     payment = Payment.lookup(payment_code)
 
-    print "foo:", pp.get_parameter("merchant_secret")
+    print "foo:", pp.get_setting("merchant_secret")
     try:
         
         pp.success(request, payment)
-        return HttpResponseRedirect(pp.get_parameter("return_url") % payment_code)
+        return HttpResponseRedirect(pp.get_setting("return_url") % payment_code)
     except PaymentProcessingError:
-        return HttpResponseRedirect(pp.get_parameter("return_url") % payment_code)
+        return HttpResponseRedirect(pp.get_setting("return_url") % payment_code)
 
     # what about the refund hooks?
 

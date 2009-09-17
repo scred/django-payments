@@ -36,12 +36,10 @@ class Payment():
 
     def __init__(self, **kwargs):
 
-        # print "__init__ of Payment() called"
-
         self.payment_methods = None
         self.values = {"code": kwargs["code"]}
-        #self.cart = None
-        #self.recipient = None
+        self.cart = []
+        self.payment_method = None
 
     @property
     def code(self):
@@ -64,9 +62,25 @@ class Payment():
             forms[method] = pp.get_checkout_form(self)
         return forms
 
+    def get_query_form(self, payment_method):
+        # FIXME: deprecated! kill kill!
+        print "get_query_form() called"
+        pp = PaymentProcessor.get_processor(payment_method)
+        return pp.get_query_form(self)
+
+    # FIXME: buggy! the payment method must already have been defined,
+    # ie the payment completed, or otherwise it makes no sense to do a
+    # query like this.
+
+    # FIXME: Nothing is actually done for validate and set_status ops.
+    
+    def query(self, payment_method, validate=False, set_status=False):
+        pp = PaymentProcessor.get_processor(payment_method)
+        return pp.get_query_form(self) # FIXME: buggy method name
+
     def success(self, payment_method):
         
-        self.set_value("_cleared", "true")
+        self.set_value("__cleared", "true")
         self.set_value("_method", payment_method)
         self.save()
 
@@ -87,6 +101,18 @@ class Payment():
     def load(self):
         return self.storage.load(self)
 
+    def add_item(self, **kwargs):
+        return self.storage.add_item(self, **kwargs)
+
+    def get_items(self):
+        return self.storage.get_items(self)
+
+    def get_status(self):
+        return self.get_value("__status")
+
+    def set_status(self, value):
+        return self.set_value("__status", value)
+
     @classmethod
     def lookup(self, code):
         payment = Payment(code=code)
@@ -103,13 +129,21 @@ class PickledStorage():
 
     @classmethod
     def set_value(self, payment, key, value):
-        # print "set_value() of PickledPayment() called: %s=%s" % (key, value)
         payment.values[key] = value
         return value
 
     @classmethod
     def get_values(self, payment):
         return payment.values
+
+    @classmethod
+    def add_item(self, payment, **kwargs):
+        payment.cart.append(kwargs)
+        return kwargs
+
+    @classmethod
+    def get_items(self, payment):
+        return payment.cart
 
     @classmethod
     def save(self, payment):

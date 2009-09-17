@@ -126,6 +126,10 @@ PAYMENT_PROCESSORS = {
         "merchant_name": "Company Ltd",
         "return_url": "/order/%s/",
     },    
+    "paypal": {
+        "merchant_account": "toivotuo@kasvua.org",
+        "return_url": "/order/%s/",
+    },
 }
 
 # FIXME: not checked anywhere yet

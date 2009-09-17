@@ -1,0 +1,21 @@
+Short intro on how "stuff" works
+
+
+- Create a payment, ie something that is to be paid for.
+
+- Set the core parameters of the payment.
+
+- Add some items to the payment.
+
+- Present a checkout page for the user. You can get the Django forms
+  for the various payment buttons using payment.get_checkout_forms().
+
+- After the user goes through her bank, she's returned to a generic
+  payment view. Checking for return data validity is done.
+
+- Finally redirection to a service's specific success (error or
+  whatever) page is done.
+
+
+Q: how to do the query? that's an additional method for the processor,
+but is it accessed through the pament or the processor?

@@ -97,7 +97,7 @@ class LuottokuntaPaymentProcessor(PaymentProcessor):
             if source == "data":
                 s += data[var]
             elif source == 'processor':
-                s += self.get_parameter(var)
+                s += self.get_setting(var)
             else:
                 pass
             s += self.PAYMENT_REQ_SEPARATOR
@@ -125,7 +125,7 @@ class LuottokuntaPaymentProcessor(PaymentProcessor):
             elif source == 'POST':
                 s += request.POST.get(var, '')
             elif source == 'processor':
-                s += self.get_parameter(var)
+                s += self.get_setting(var)
             elif source == 'payment':
                 value = payment.get_value(var)
                 if var == 'amount':

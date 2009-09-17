@@ -11,3 +11,5 @@ from tapiola import TapiolaPaymentProcessor
 from spankki import SpankkiPaymentProcessor
 
 from luottokunta import LuottokuntaPaymentProcessor
+
+from paypal import PaypalPaymentProcessor
