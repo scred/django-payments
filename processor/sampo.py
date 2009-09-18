@@ -3,6 +3,12 @@ from processor import PaymentProcessor, MaksunapitPaymentProcessor
 class SampoPaymentProcessor(MaksunapitPaymentProcessor):
 
     """
+    Payment processor for Sampo Pankki Verkkomaksupalvelu.
+
+    Features: authcap, query
+
+    Region(s): FI
+
     Specification:
       http://bit.ly/ZURkl (in Finnish, PDF)
 
@@ -18,6 +24,7 @@ class SampoPaymentProcessor(MaksunapitPaymentProcessor):
     METHOD = "sampo"
 
     URL = "https://verkkopankki.sampopankki.fi/SP/vemaha/VemahaApp"
+    QUERY_URL = "https://netbank.danskebank.dk/HB"
     BUTTON_URL = "https://www.sampopankki.fi/verkkopalvelu/logo.gif"
 
     PARAMETERS = {}
@@ -79,5 +86,52 @@ class SampoPaymentProcessor(MaksunapitPaymentProcessor):
         ("VALUUTTA", "POST"),
     )
     PAYMENT_RESP_SEPARATOR = ""
+
+    @classmethod
+    def query(self, payment):
+        """
+        Automated query for payment status.
+        """
+
+        import urllib2
+        from urllib import urlencode
+        import cgi
+
+        data = {}
+
+        data["Refno"] = payment.get_value("fi_reference")
+        data["MerchantID"] = self.get_setting("merchant_key")
+        data["gsAftlnr"] = "foobar" # FIXME: wtf is this
+        data["gsSprog"] = "EN"
+        data["gsProdukt"] = "IBV"
+        data["gsNextObj"] = "InetPayV"
+        data["gsNextAkt"] = "InetPaySt"
+        data["Version"] = "0001"
+        data["gsResp"] = "S"
+        
+        order = ("secret", "MerchantID", "Refno")
+
+        s = ""
+        for p in order:
+            if p == "secret":
+                s += self.get_setting("merchant_secret")
+            else:
+                s += data[p]
+
+        import md5
+        m = md5.new(s)
+        data["VerifyCode"] = m.hexdigest().upper()
+        
+        con = urllib2.urlopen(self.QUERY_URL, urlencode(data))
+        resp = con.read()
+
+        respdata = cgi.parse_qs(resp)
+
+        # No response MAC is sent.
+
+        if respdata["ReturnCode"] == "000":
+            return (True, respdata)
+        else:
+            return (False, respdata)
 
 PaymentProcessor.register_processor(SampoPaymentProcessor)
