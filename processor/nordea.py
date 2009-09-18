@@ -112,7 +112,7 @@ class NordeaPaymentProcessor(MaksunapitPaymentProcessor):
     #SOLOPMT_MAC
 
     @classmethod
-    def get_query_form(self, payment):
+    def query(self, payment):
 
         """
         The Nordea payment query interface has two basic operations
@@ -236,15 +236,18 @@ class NordeaPaymentProcessor(MaksunapitPaymentProcessor):
         print "MAC-A", m.hexdigest().upper()
         print "MAC-B", respmac
 
-        # FIXME: check the mac!
+        if respmac != m.hexdigest().upper():
+            raise PaymentInvalidMacError("Response MAC is invalid.")
 
         # FIXME: Do something with the returned data!
 
-        return respdata
+        if respdata["SOLOPMT_RESPCODE"] == "OK":
+            return (True, respdata)
+        else:
+            return (False, respdata)
 
     @classmethod
-    def get_refund_form(self, payment):
-
+    def refund(self, payment):
         """
         Refunds one Nordea payment in full.
 
@@ -265,9 +268,6 @@ class NordeaPaymentProcessor(MaksunapitPaymentProcessor):
 
         # FIXME: we need for parameters flexible forward and backwards
         # parameter marshalling methods
-
-        #import httplib
-        #from urlparse import urlparse
 
         print "refund() called"
         

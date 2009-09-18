@@ -72,15 +72,16 @@ class Payment():
     # ie the payment completed, or otherwise it makes no sense to do a
     # query like this.
 
-    # FIXME: Nothing is actually done for validate and set_status ops.
+    # FIXME: No validation or status parameter setting is done, but
+    # perhaps should.
     
-    def query(self, payment_method, validate=False, set_status=False):
+    def query(self, payment_method):
         pp = PaymentProcessor.get_processor(payment_method)
-        return pp.get_query_form(self) # FIXME: buggy method name
+        return pp.query(self)
 
     def refund(self, payment_method):
         pp = PaymentProcessor.get_processor(payment_method)
-        return pp.get_refund_form(self) # FIXME: buggy method name
+        return pp.refund(self)
 
     def success(self, payment_method):
         
@@ -120,9 +121,7 @@ class Payment():
     @classmethod
     def lookup(self, code):
         payment = Payment(code=code)
-        #print "payment one:", payment
         payment.load()
-        #print "payment two:", payment        
         return payment
 
 class PickledStorage():

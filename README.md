@@ -54,6 +54,7 @@ Supported payment systems
   - Global:
 
     - PayPal Website Payments Standard  [planned]
+    - authorize.net Simple Integration Method  [planned]
 
 Contributors
 ------------
