@@ -158,6 +158,16 @@ class PaymentProcessor():
     def success_check_custom(self, request, payment):
         pass
 
+    @classmethod
+    def query(self, payment):
+        raise NotImplementedError("Query interface not implemented: %s" %
+                                  self.METHOD)
+
+    @classmethod
+    def refund(self, payment):
+        raise NotImplementedError("Refund interface not implemented: %s" %
+                                  self.METHOD)
+
 from django.http import HttpResponseRedirect
 
 def success_view(request, payment_method, payment_code):
@@ -175,13 +185,14 @@ def success_view(request, payment_method, payment_code):
 
     payment = Payment.lookup(payment_code)
 
-    print "foo:", pp.get_setting("merchant_secret")
     try:
         
         pp.success(request, payment)
-        return HttpResponseRedirect(pp.get_setting("return_url") % payment_code)
+        return HttpResponseRedirect(pp.get_setting("return_url") %
+                                    payment_code)
     except PaymentProcessingError:
-        return HttpResponseRedirect(pp.get_setting("return_url") % payment_code)
+        return HttpResponseRedirect(pp.get_setting("return_url") %
+                                    payment_code)
 
     # what about the refund hooks?
 

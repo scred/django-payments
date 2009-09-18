@@ -5,7 +5,7 @@ class SampoPaymentProcessor(MaksunapitPaymentProcessor):
     """
     Payment processor for Sampo Pankki Verkkomaksupalvelu.
 
-    Features: authcap, query
+    Features: authcap, (query)
 
     Region(s): FI
 

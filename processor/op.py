@@ -5,6 +5,8 @@ class OpPaymentProcessor(MaksunapitPaymentProcessor):
     """
     Payment processor for Osuuspankki (OP) Verkkomaksu.
 
+    Features: authcap, query
+
     Region(s): FI
 
     Specifications:
@@ -22,7 +24,8 @@ class OpPaymentProcessor(MaksunapitPaymentProcessor):
     METHOD = "op"
 
     URL = "https://kultaraha.op.fi/cgi-bin/krcgi"
-    BUTTON_URL = ""
+    QUERY_URL = "https://kultaraha.op.fi/cgi-bin/krcgi"
+    BUTTON_URL = "FIXME"
 
     PARAMETERS = {}
 
@@ -80,12 +83,71 @@ class OpPaymentProcessor(MaksunapitPaymentProcessor):
     PAYMENT_RESP_MAC = "TARKISTE"
     PAYMENT_RESP_PARAMS = (
         ("VERSIO", "GET"),
-        ("MAKSUTUNNUS","GET"),
+        ("MAKSUTUNNUS", "GET"),
         ("VIITE", "GET"),
         ("ARKISTOINTITUNNUS", "GET"),
         ("TARKISTEVERSIO", "GET"),        
         ("merchant_secret", "processor"),
     )
     PAYMENT_RESP_SEPARATOR = ""
+
+    @classmethod
+    def query(self, payment):
+        """
+        Automated query for payment status.
+
+        For testing use parameters MAKSUTUNNUS='1997060417052135',
+        VIITE='13' and the normal testing merchant credentials.
+
+        FIXME: Works as far as the POST to the bank is
+        concerned. Returns a HTML page which has a link that points to
+        PALUU-LINKKI. Should be clicked to ensure that the query
+        results are recorded. No view or anything is currently
+        implemented to handle the PALUU-LINKKI URL.
+        """
+
+        import urllib2
+        from urllib import urlencode
+        import cgi
+
+        data = {}
+
+        data["action_id"] = "708"
+        data["VERSIO"] = "0006"
+        data["MYYJA"] = self.get_setting("merchant_key")
+        data["KYSELYTUNNUS"] = "FIXME"
+        data["MAKSUTUNNUS"] = payment.get_value("code")
+        data["VIITE"] = payment.get_value("fi_reference")
+        data["TARKISTE-VERSIO"] = "6"
+        data["PALUU-LINKKI"] = "http://quatloo.dev.scred.com:2345/payment/ping/op-query-response/%s/" % payment.get_value("code") # FIXME
+        
+        order = ("VERSIO", "MYYJA", "KYSELYTUNNUS", "MAKSUTUNNUS",
+                 "VIITE", "TARKISTE-VERSIO", "secret")
+
+        s = ""
+        for p in order:
+            if p == "secret":
+                s += self.get_setting("merchant_secret")
+            else:
+                s += data[p]
+
+        import md5
+        m = md5.new(s)
+        data["TARKISTE"] = m.hexdigest().upper()
+        
+        con = urllib2.urlopen(self.QUERY_URL, urlencode(data))
+        resp = con.read()
+        print resp
+
+        #respdata = cgi.parse_qs(resp)
+
+        # No response MAC is sent.
+
+        return
+
+        if respdata["ReturnCode"] == "000":
+            return (True, respdata)
+        else:
+            return (False, respdata)
 
 PaymentProcessor.register_processor(OpPaymentProcessor)
