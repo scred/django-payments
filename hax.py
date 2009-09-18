@@ -33,7 +33,7 @@ payment.save()
 #for key, value in payment.get_checkout_forms()["paypal"].items():
 #    print "%s = %s" % (key, value)
 
-print payment.query("sampo")
+print payment.query("nordea")
 #payment.refund("nordea")
 
 # simulated return from the bank

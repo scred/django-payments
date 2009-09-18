@@ -96,24 +96,8 @@ class NordeaPaymentProcessor(MaksunapitPaymentProcessor):
     )
     PAYMENT_RESP_SEPARATOR = "&"
 
-    # https://solo3.nordea.fi/cgi-bin/SOLOPM10
-    #SOLOPMT_VERSION = "0001"
-    #SOLOPMT_TIMESTMP = "VVVVKKPPHHMMSSnnnn"
-    #SOLOPMT_RCV_ID
-    #SOLOPMT_LANGUAGE
-    #SOLOPMT_RESPTYPE = xml/html
-    #SOLOPMT_RESPDATA
-    #SOLOPMT_RESPDETL
-    #SOLOPMT_STAMP
-    #SOLOPMT_REF
-    #SOLOPMT_AMOUNT
-    #SOLOPMT_CUR
-    #SOLOPMT_ALG "01"
-    #SOLOPMT_MAC
-
     @classmethod
     def query(self, payment):
-
         """
         The Nordea payment query interface has two basic operations
         modes: one targeted at operator instigated queries and another
@@ -137,8 +121,10 @@ class NordeaPaymentProcessor(MaksunapitPaymentProcessor):
         # FIXME: we need for parameters flexible forward and backwards
         # parameter marshalling methods
 
-        import httplib
-        from urlparse import urlparse
+        import urllib2
+        from urllib import urlencode
+        import md5
+        from xml.etree.ElementTree import XML
 
         data = {}
 
@@ -162,11 +148,6 @@ class NordeaPaymentProcessor(MaksunapitPaymentProcessor):
                  "RESPDATA", "RESPDETL", "STAMP", "REF", "AMOUNT", "CUR",
                  "KEYVERS", "ALG", "secret")
 
-#        order = ("VERSION", "TIMESTMP", "RCV_ID", "LANGUAGE", "RESPTYPE",
-#                 "RESPDATA", "RESPDETL", "STAMP",
-#                 #"REF", "AMOUNT", "CUR", 
-#                 "KEYVERS", "ALG", "secret")
-
         s = ""
         for p in order:
             if p == "secret":
@@ -176,29 +157,11 @@ class NordeaPaymentProcessor(MaksunapitPaymentProcessor):
                 if key in data:
                     s += data[key] + "&"
 
-        #print "MAC:", s
-        #print "WANT:", "0001&199911161024590001&12345678&1&html&http://158.233.9.9/hsmok.htm&Y&501&0001&01&LEHTI&"
-
-        import md5
         m = md5.new(s)
         data["SOLOPMT_MAC"] = m.hexdigest().upper()
-
-        #print "pp.get_query_form() called"
-
-        print "MAC-0:", data["SOLOPMT_MAC"]
-
-        import urllib2
-        from urllib import urlencode
         
         con = urllib2.urlopen(self.QUERY_URL, urlencode(data))
         resp = con.read()
-        #print resp
-
-        # https:///cgi-bin/SOLOPM10
-        #http = httplib.HTTPSConnection("solo3.nordea.fi", 443)
-        #http.putrequest("POST", "/cgi-bin/SOLOPM10")
-
-        from xml.etree.ElementTree import XML, SubElement
 
         QUERY_RESP_PARAMS = (
             "SOLOPMT_VERSION",
@@ -227,19 +190,12 @@ class NordeaPaymentProcessor(MaksunapitPaymentProcessor):
                 respdata[e.tag] = e.text
             if e.tag == "SOLOPMT_MAC":
                 respmac = e.text
-            print "%s = %s" % (e.tag, e.text)
         macs += self.get_setting("merchant_secret") + "&"
 
-        import md5
         m = md5.new(macs)
-        print "macs", macs
-        print "MAC-A", m.hexdigest().upper()
-        print "MAC-B", respmac
 
         if respmac != m.hexdigest().upper():
             raise PaymentInvalidMacError("Response MAC is invalid.")
-
-        # FIXME: Do something with the returned data!
 
         if respdata["SOLOPMT_RESPCODE"] == "OK":
             return (True, respdata)
