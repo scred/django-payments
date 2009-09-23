@@ -1,4 +1,4 @@
-from processor import PaymentProcessor, MaksunapitPaymentProcessor
+from payments import PaymentProcessor, MaksunapitPaymentProcessor
 
 class SamlinkPaymentProcessor(MaksunapitPaymentProcessor):
 

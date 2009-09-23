@@ -1,15 +1,14 @@
-from PaymentProcessor import PaymentProcessor
+from processor import PaymentProcessor
+from connector import PaymentConnector
 
-from PaymentProcessor import success_view
+from processors.maksunapit import MaksunapitPaymentProcessor
+from processors.nordea import NordeaPaymentProcessor
+from processors.sampo import SampoPaymentProcessor
+from processors.op import OpPaymentProcessor
+from processors.samlink import SamlinkPaymentProcessor
+from processors.tapiola import TapiolaPaymentProcessor
+from processors.spankki import SpankkiPaymentProcessor
 
-from maksunapit import MaksunapitPaymentProcessor
-from nordea import NordeaPaymentProcessor
-from sampo import SampoPaymentProcessor
-from op import OpPaymentProcessor
-from samlink import SamlinkPaymentProcessor
-from tapiola import TapiolaPaymentProcessor
-from spankki import SpankkiPaymentProcessor
+from processors.luottokunta import LuottokuntaPaymentProcessor
 
-from luottokunta import LuottokuntaPaymentProcessor
-
-from paypal import PaypalPaymentProcessor
+from processors.paypal import PaypalPaymentProcessor

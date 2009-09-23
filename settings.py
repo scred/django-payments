@@ -77,7 +77,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.sites',
     'example',
-    'processor',
+    'payments',
 )
 
 # FIXME: having return url here is no good

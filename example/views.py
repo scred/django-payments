@@ -11,8 +11,8 @@ def checkout(request):
     """
 
     import datetime
-    from SP import Payment, PickledStorage
-    from processor import PaymentProcessor
+    from payments import PaymentStorage, PickledStorage
+    from payments import PaymentProcessor
 
     Payment.set_storage(PickledStorage)
 

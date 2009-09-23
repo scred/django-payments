@@ -1,6 +1,6 @@
 import md5
-from processor import PaymentProcessor
-from processor.exceptions import PaymentInvalidMacError
+from payments import PaymentProcessor
+from payments.exceptions import PaymentInvalidMacError
 
 class LuottokuntaPaymentProcessor(PaymentProcessor):
 

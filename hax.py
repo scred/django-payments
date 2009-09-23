@@ -6,16 +6,16 @@ payment form for each method set for the payment.
 """
 
 import sys
-from processor import PaymentProcessor, success_view
-from SP import Payment, PickledStorage
+from payments import PaymentProcessor
+from payments.connector import PaymentConnector, PickledStorage
 
 # initialize payment processors with test credentials
 
-Payment.set_storage(PickledStorage)
+PaymentConnector.set_storage(PickledStorage)
 
 # create a payment instance
 
-payment = Payment(code="1997060417052135")
+payment = PaymentConnector(code="1997060417052135")
 #payment = Payment(code="900")
 #payment.set_payment_methods(["nordea", "sampo", "op", "samlink", "tapiola"])
 payment.set_payment_methods(["sampo"])

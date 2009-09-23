@@ -6,6 +6,6 @@ urlpatterns = patterns('example.views',
     (r'^query/$', 'query'),
 )
 
-urlpatterns += patterns('processor.PaymentProcessor',
-    (r'^payment/success/(.+?)/(.+?)/$', 'success_view'),
+urlpatterns += patterns('payments.views',
+    url(r'^payment/success/(.+?)/(.+?)/$', 'success'),
 )

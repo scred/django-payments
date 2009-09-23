@@ -19,7 +19,7 @@
 
 from processor import PaymentProcessor
 
-class Payment():
+class PaymentConnector():
     """
     Mandatory parameters for a payment:
      - ??

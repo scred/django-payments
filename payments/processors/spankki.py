@@ -1,6 +1,6 @@
 # -*- coding: iso-8859-9 -*-
 
-from processor import PaymentProcessor, MaksunapitPaymentProcessor
+from payments import PaymentProcessor, MaksunapitPaymentProcessor
 
 class SpankkiPaymentProcessor(MaksunapitPaymentProcessor):
 
