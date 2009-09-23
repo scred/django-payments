@@ -11,39 +11,44 @@ def checkout(request):
     """
 
     import datetime
-    from payments import PaymentStorage, PickledStorage
+    from payments import PaymentConnector
     from payments import PaymentProcessor
+    from example.utils import PickledPaymentConnector
 
-    Payment.set_storage(PickledStorage)
+    PaymentConnector.set_connector(PickledPaymentConnector)
 
     methods = (
         ("nordea", True),
         ("tapiola", True),
-        ("sampo", False),
-        ("op", True),
-        ("samlink", True),
-        ("luottokunta", True),
-        ("spankki", True),
-        ("paypal", False),        
+#        ("sampo", False),
+#        ("op", True),
+#        ("samlink", True),
+#        ("luottokunta", True),
+#        ("spankki", True),
+#        ("paypal", False),        
     )
 
     code = datetime.datetime.now().strftime("%H%M%S")
-    payment = Payment(code=code)
+    p = {
+        "currency": "EUR",
+        "language": "en",
+        "message": "Payment test!",
+        "amount": "1.00",
+        "fi_reference": "55",
+    }
+
+    payment = PickledPaymentConnector(code, p)
+    
     payment.set_payment_methods([m[0] for m in methods])
-    payment.set_value("currency", "EUR")
-    payment.set_value("language", "fi")
-    payment.set_value("message", "Payment test!")
-    payment.set_value("amount", "1.00")
-    payment.set_value("fi_reference", "55")
-    payment.add_item(price="42.00", qty="4", tax="0", description="widget")
-    payment.add_item(price="12.00", qty="2", tax="0", description="choco")
+#    payment.add_item(price="42.00", qty="4", tax="0", description="widget")
+#    payment.add_item(price="12.00", qty="2", tax="0", description="choco")
     payment.save()
 
     forms = {}
     for method, tested in methods:
         pp = PaymentProcessor.get_processor(method)
-        forms[method] = {"url": pp.URL,
-                         "form": payment.get_checkout_form(method),
+        forms[method] = {"url": payment.get_checkout_url(method),
+                         "form": payment.get_checkout_params(method),
                          "tested": tested}
 
     context = {

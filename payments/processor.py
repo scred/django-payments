@@ -1,3 +1,4 @@
+import settings
 from exceptions import PaymentProcessingError
 
 class PaymentProcessor():
@@ -20,7 +21,6 @@ class PaymentProcessor():
 
     @classmethod
     def get_setting(self, key):
-        import settings
         return settings.PAYMENT_PROCESSORS[self.METHOD][key]
         # return getattr(settings, "PAYMENT_PROCESSORS")[self.METHOD][key]
 
@@ -44,7 +44,11 @@ class PaymentProcessor():
     # class method to set payables?
 
     @classmethod
-    def get_checkout_form(self, payment):
+    def get_checkout_url(self):
+        return self.URL
+
+    @classmethod
+    def get_checkout_params(self, payment):
 
         # FIXME: Need to somehow formalize this a bit and return an
         # actual Django form instance.
@@ -89,8 +93,9 @@ class PaymentProcessor():
 
         # set return urls
         for key, value in self.DATA_URLS.items():
-            value = "http://localhost:8001/payment/%s/%s/%s/" % \
-                (value, self.METHOD, payment.code)
+            value = "%s/%s/%s/%s/" % \
+                (settings.PAYMENT_PROCESSOR_URL,
+                 value, self.METHOD, payment.code)
             data[key] = value                
 
         # get custom data
@@ -127,7 +132,7 @@ class PaymentProcessor():
         self.success_check_custom(request, payment)
         # ...
         
-        from PaymentConnector import Payment
+        from payments.connector import PaymentConnector
 
         # FIXME: activate these two lines
         # payment = Payment.lookup(payment_code)

@@ -6,6 +6,5 @@ urlpatterns = patterns('example.views',
     (r'^query/$', 'query'),
 )
 
-urlpatterns += patterns('payments.views',
-    url(r'^payment/success/(.+?)/(.+?)/$', 'success'),
-)
+urlpatterns += patterns('',
+                        (r'^payment/', include('payments.urls')))

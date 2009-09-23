@@ -1,22 +1,23 @@
 from django.http import HttpResponseRedirect
+from payments.processor import PaymentProcessor
+from payments.exceptions import PaymentProcessingError
 
 def success(request, payment_method, payment_code):
 
-    # FIXME: lookup payment already here based on the code
-
     # FIXME: should probably do something different on error
 
+    from payments.connector import PaymentConnector
+    from example.utils import PickledPaymentConnector
+
+    # FIXME: Setting the connector class here is way problematic.
+    PaymentConnector.set_connector(PickledPaymentConnector)
+
     pp = PaymentProcessor.get_processor(payment_method)
+    payment = PaymentConnector.get_connector().lookup(payment_code)
 
-    # FIXME: lookup the payment here
-
-    from SP import Payment, PickledStorage
-    Payment.set_storage(PickledStorage)
-
-    payment = Payment.lookup(payment_code)
+    print "payment:", payment
 
     try:
-        
         pp.success(request, payment)
         return HttpResponseRedirect(pp.get_setting("return_url") %
                                     payment_code)
@@ -24,6 +25,6 @@ def success(request, payment_method, payment_code):
         return HttpResponseRedirect(pp.get_setting("return_url") %
                                     payment_code)
 
-    # what about the refund hooks?
+    # FIXME: what about the refund hooks?
 
-    # what about the payment check hooks?
+    # FIXME: what about the payment check hooks?

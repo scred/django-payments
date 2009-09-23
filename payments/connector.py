@@ -17,6 +17,7 @@
 # FIXME: processors should have support for mandatory and optional
 # parameters
 
+import logging
 from processor import PaymentProcessor
 
 class PaymentConnector():
@@ -31,19 +32,28 @@ class PaymentConnector():
     # after clearing: method that was used
 
     @classmethod
-    def set_storage(self, klass):
-        self.storage = klass
+    def get_connector(self):
+        return self.connector
+
+    @classmethod
+    def set_connector(self, klass):
+        self.connector = klass
 
     def __init__(self, **kwargs):
+        """ Deprecated! """
 
+        self.connector = None
         self.payment_methods = None
         self.values = {"code": kwargs["code"]}
         self.cart = []
         self.payment_method = None
 
+    def __init__(self):
+        pass
+
     @property
     def code(self):
-        return self.values["code"]
+        return self.get_value("code")
 
     def get_payment_methods(self):
         return self.payment_methods
@@ -51,11 +61,21 @@ class PaymentConnector():
     def set_payment_methods(self, methods):
         self.payment_methods = methods
 
+    def get_checkout_url(self, payment_method):
+        pp = PaymentProcessor.get_processor(payment_method)
+        return pp.get_checkout_url()
+
+    def get_checkout_params(self, payment_method):
+        pp = PaymentProcessor.get_processor(payment_method)
+        return pp.get_checkout_params(self)
+
     def get_checkout_form(self, payment_method):
+        logging.warn("Deprecated method get_checkout_form() called!")
         pp = PaymentProcessor.get_processor(payment_method)
         return pp.get_checkout_form(self)
 
     def get_checkout_forms(self):
+        logging.warn("Deprecated method get_checkout_forms() called!")
         forms = {}
         for method in self.get_payment_methods():
             pp = PaymentProcessor.get_processor(method)
@@ -92,7 +112,8 @@ class PaymentConnector():
         # FIXME: Sending signal is missing!
 
     def get_value(self, key):
-        return self.storage.get_value(self, key)
+        raise NotImplementedError("connector doesn't implement get_value()")
+        #return self.storage.get_value(self, key)
 
     def set_value(self, key, value):
         return self.storage.set_value(self, key, value)
@@ -101,9 +122,11 @@ class PaymentConnector():
         return self.storage.get_values(self)
 
     def save(self):
+        raise NotImplementedError()
         return self.storage.save(self)
 
     def load(self):
+        raise NotImplementedError()
         return self.storage.load(self)
 
     def add_item(self, **kwargs):
@@ -120,9 +143,15 @@ class PaymentConnector():
 
     @classmethod
     def lookup(self, code):
-        payment = Payment(code=code)
-        payment.load()
-        return payment
+        raise NotImplementedError("connector must implement lookup()")
+
+        c = self.get_connector()
+        return c.lookup(code)
+        print "c:", c
+        return None
+        #payment = Payment(code=code)
+        #payment.load()
+        #return payment
 
 class PickledStorage():
 
