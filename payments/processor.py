@@ -1,4 +1,5 @@
 import settings
+import logging
 from exceptions import PaymentProcessingError
 
 class PaymentProcessor():
@@ -101,7 +102,7 @@ class PaymentProcessor():
         # get custom data
         data.update(self.checkout_hash(data))
 
-        print "USE_CART:", self.get_parameter("USE_CAR")
+        #print "USE_CART:", self.get_parameter("USE_CAR")
 
         if self.get_parameter("USE_CART"):
             items = payment.get_items()
@@ -126,6 +127,11 @@ class PaymentProcessor():
         for return parameters and saving payment status need to be
         done.
         """
+
+        assert payment, "PAYMENT IS NONESUCH"
+
+        logging.debug("PAYMENT IS: %s" % payment)
+        logging.debug("PAYMENT.PAYMENT IS: %s" % payment.payment)        
 
         # call processor validation hooks
         self.success_check_mac(request, payment)
