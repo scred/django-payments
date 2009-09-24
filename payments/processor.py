@@ -127,24 +127,19 @@ class PaymentProcessor():
         done.
         """
 
-        # call processor hooks
+        # call processor validation hooks
         self.success_check_mac(request, payment)
         self.success_check_custom(request, payment)
         # ...
+
+        # everything checks okay, store the status
+        payment.set_status("success")
+        payment.set_value("payment_method", self.METHOD)
+        payment.set_value("processor_reference", "FIXME")
+
+        return payment.success()
         
-        from payments.connector import PaymentConnector
-
-        # FIXME: activate these two lines
-        # payment = Payment.lookup(payment_code)
-        # payment.success(self.METHOD)
-        
-        # print "payment:", payment
-        #print "payment:", type(payment)
-
-        # FIXME: all ok, now need to do a redirect
-
         # should we check the payment value and stuff like that?
-
         # who makes the call for audit?
 
     @classmethod

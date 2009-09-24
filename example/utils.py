@@ -27,3 +27,5 @@ class PickledPaymentConnector(PaymentConnector):
         fh = open("%s.pickle" % self.code, "w")
         pickle.dump(self.data, fh)
         fh.close()
+
+PaymentConnector.set_connector(PickledPaymentConnector)

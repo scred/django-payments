@@ -15,7 +15,7 @@ def checkout(request):
     from payments import PaymentProcessor
     from example.utils import PickledPaymentConnector
 
-    PaymentConnector.set_connector(PickledPaymentConnector)
+    #PaymentConnector.set_connector(PickledPaymentConnector)
 
     methods = (
         ("nordea", True),
