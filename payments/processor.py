@@ -51,9 +51,6 @@ class PaymentProcessor():
     @classmethod
     def get_checkout_params(self, payment):
 
-        # FIXME: Need to somehow formalize this a bit and return an
-        # actual Django form instance.
-        
         data = {}
 
         # set payment method fixed data
@@ -89,9 +86,6 @@ class PaymentProcessor():
                 value = self.massage_amount(value)
             data[key] = value
 
-        # FIXME: The URLs set are missing the protocol and host/port parts!
-        # FIXME: Are not, but they're hardwired!
-
         # set return urls
         for key, value in self.DATA_URLS.items():
             value = "%s/%s/%s/%s/" % \
@@ -101,8 +95,6 @@ class PaymentProcessor():
 
         # get custom data
         data.update(self.checkout_hash(data))
-
-        #print "USE_CART:", self.get_parameter("USE_CAR")
 
         if self.get_parameter("USE_CART"):
             items = payment.get_items()
@@ -127,12 +119,6 @@ class PaymentProcessor():
         for return parameters and saving payment status need to be
         done.
         """
-
-        assert payment, "PAYMENT IS NONESUCH"
-
-        logging.debug("PAYMENT IS: %s" % payment)
-        logging.debug("PAYMENT.PAYMENT IS: %s" % payment.payment)        
-
         # call processor validation hooks
         self.success_check_mac(request, payment)
         self.success_check_custom(request, payment)
