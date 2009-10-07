@@ -63,6 +63,10 @@ class PaymentConnector():
     def get_checkout_params(self, payment_method):
         pp = PaymentProcessor.get_processor(payment_method)
         return pp.get_checkout_params(self)
+
+    def get_costs(self, payment_method):
+        pp = PaymentProcessor.get_processor(payment_method)
+        return pp.get_costs(self)
     
     def get_value(self, key):
         raise NotImplementedError("connector doesn't implement get_value()")
@@ -74,10 +78,10 @@ class PaymentConnector():
         raise NotImplementedError("connector doesn't implement get_values()")
 
     def save(self):
-        raise NotImplementedError()
+        raise NotImplementedError("connector doesn't implement save()")
 
     def load(self):
-        raise NotImplementedError()
+        raise NotImplementedError("connector doesn't implement load()")
 
     def add_item(self, **kwargs):
         raise NotImplementedError("not implemented by the connector")        

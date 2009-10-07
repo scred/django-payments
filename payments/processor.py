@@ -1,5 +1,6 @@
 import settings
 import logging
+from decimal import Decimal
 from exceptions import PaymentProcessingError
 
 class PaymentProcessor():
@@ -33,16 +34,9 @@ class PaymentProcessor():
             return None
 
     def __init__(FIXME):
-
-        # params:
-        # urls dict
-        # cart
-        # receiver etc
-        
         pass
 
-    # class method to set auditing class
-    # class method to set payables?
+    ## -- external getters -- ##
 
     @classmethod
     def get_checkout_url(self):
@@ -105,12 +99,23 @@ class PaymentProcessor():
         return data
 
     @classmethod
+    def get_costs(self, payment):
+        amount = Decimal(payment.get_value("amount"))
+        amount -= amount * (Decimal(self.COST_PERCENTAGE)/100)
+        amount -= Decimal(self.COST_FIXED)
+        return amount.quantize(Decimal("1.00"))
+
+    ## -- unclassified -- ##
+
+    @classmethod
     def checkout_hash(self, data):
         return {}
 
     @classmethod
     def massage_amount(self, value):
         return value
+
+    ## -- success operations -- ##
 
     @classmethod
     def success(self, request, payment):
@@ -150,6 +155,8 @@ class PaymentProcessor():
     def success_check_custom(self, request, payment):
         pass
 
+    ## -- actions -- ##
+
     @classmethod
     def query(self, payment):
         raise NotImplementedError("Query interface not implemented: %s" %
@@ -159,3 +166,7 @@ class PaymentProcessor():
     def refund(self, payment):
         raise NotImplementedError("Refund interface not implemented: %s" %
                                   self.METHOD)
+
+    ## -- miscellaneous -- ##
+
+    # ??
