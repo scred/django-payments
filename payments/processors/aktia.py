@@ -92,5 +92,8 @@ class AktiaPaymentProcessor(SamlinkPaymentProcessor):
         ("merchant_secret", "processor"),
     )
     PAYMENT_RESP_SEPARATOR = "&"
+
+    COST_FIXED = "0.34"
+    COST_PERCENTAGE = "0.00"
     
 PaymentProcessor.register_processor(AktiaPaymentProcessor)

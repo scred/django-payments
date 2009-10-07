@@ -2,10 +2,13 @@ from processor import PaymentProcessor
 from connector import PaymentConnector
 
 from processors.maksunapit import MaksunapitPaymentProcessor
+from processors.samlink import SamlinkPaymentProcessor
+
 from processors.nordea import NordeaPaymentProcessor
 from processors.sampo import SampoPaymentProcessor
 from processors.op import OpPaymentProcessor
-from processors.samlink import SamlinkPaymentProcessor
+from processors.aktia import AktiaPaymentProcessor
+from processors.sppop import SppopPaymentProcessor
 from processors.tapiola import TapiolaPaymentProcessor
 from processors.spankki import SpankkiPaymentProcessor
 

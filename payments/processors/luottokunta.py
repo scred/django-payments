@@ -104,14 +104,9 @@ class LuottokuntaPaymentProcessor(PaymentProcessor):
 
         m = md5.new(s)
 
-        #print "MAC string:", s
-        #print "MAC digest:", m.hexdigest().upper()
-
         return {
             self.PAYMENT_REQ_MAC: m.hexdigest().upper(),
         }
-
-    # http://localhost:8001/payment/success/luottokunta/1234567890/?LKMAC=CD680E8BA57C77D2AB149F292635D237
 
     @classmethod
     def success_check_mac(self, request, payment):

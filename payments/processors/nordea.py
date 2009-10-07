@@ -96,6 +96,9 @@ class NordeaPaymentProcessor(MaksunapitPaymentProcessor):
     )
     PAYMENT_RESP_SEPARATOR = "&"
 
+    COST_FIXED = "0.35"
+    COST_PERCENTAGE = "0.00"
+
     @classmethod
     def query(self, payment):
         """

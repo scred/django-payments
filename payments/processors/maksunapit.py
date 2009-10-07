@@ -25,9 +25,6 @@ class MaksunapitPaymentProcessor(PaymentProcessor):
 
         m = md5.new(s)
 
-        #print "MAC string:", s
-        #print "MAC digest:", m.hexdigest().upper()
-
         return {
             self.PAYMENT_REQ_MAC: m.hexdigest().upper(),
         }
@@ -49,9 +46,6 @@ class MaksunapitPaymentProcessor(PaymentProcessor):
 
         m = md5.new(s)
         return_mac = request.GET.get(self.PAYMENT_RESP_MAC, '')
-
-        print "MAC-A:", m.hexdigest().upper()
-        print "MAC-B:", return_mac.upper()
 
         if m.hexdigest().upper() != return_mac.upper():
             raise PaymentInvalidMacError("Return MAC doesn't match!")

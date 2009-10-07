@@ -93,4 +93,7 @@ class SppopPaymentProcessor(SamlinkPaymentProcessor):
     )
     PAYMENT_RESP_SEPARATOR = "&"
 
+    COST_FIXED = "1.10"
+    COST_PERCENTAGE = "0.00"
+
 PaymentProcessor.register_processor(SppopPaymentProcessor)
