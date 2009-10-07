@@ -3,30 +3,19 @@ from payments import PaymentProcessor, MaksunapitPaymentProcessor
 class SamlinkPaymentProcessor(MaksunapitPaymentProcessor):
 
     """
-    Payment processor for Samlink SP/POP/AKTIA-maksu.
+    Payment processor for Samlink SP/POP/AKTIA-maksu and Handelsbanken.
 
-    Note: With rather minor modifications this module would work also
-    with Handelsbanken who also use Samlink as a technology provider.
+    There are three banks that use Samlink as their technology
+    provider. Interfaces used by the banks are identical except for
+    some differences in URLs and costs.
 
     Features: authcap, (query)
 
     Region(s): FI
 
     Specifications:
-      ??
       http://bit.ly/6XWNf (in Finnish, PDF) [Handelsbanken]
-    
-    Merchant credentials for testing:
-      merchant_key = "0000000000"
-      merchant_secret = "11111111111111111111"
-      merchant_account = "448710-126"
-
-    Client credentials for testing:
-      username = "11111111"
-      password = "123456"
     """
-
-    METHOD = "samlink"
 
     URL = "https://verkkomaksu.inetpankki.samlink.fi/vm/login.html"
     QUERY_URL = "https://verkkomaksu.inetpankki.samlink.fi/vm/kysely.html"
@@ -152,7 +141,6 @@ class SamlinkPaymentProcessor(MaksunapitPaymentProcessor):
         except urllib2.HTTPError:
             print "caught"
             return
-            
 
         #respdata = cgi.parse_qs(resp)
 
@@ -164,6 +152,3 @@ class SamlinkPaymentProcessor(MaksunapitPaymentProcessor):
             return (True, respdata)
         else:
             return (False, respdata)
-
-
-PaymentProcessor.register_processor(SamlinkPaymentProcessor)
