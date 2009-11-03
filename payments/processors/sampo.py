@@ -17,8 +17,9 @@ class SampoPaymentProcessor(MaksunapitPaymentProcessor):
       merchant_secret = "jumCLB4T2ceZWGJ9ztjuhn5FaeZnTm5HpfDXWU2APRqfDcsrBs8mqkFARzm7uXKd"
 
     Client credentials for testing:
-      username = "??"
-      password = "??"
+      There are no separate client credentials for testing. Normal
+      production credentials are to be used, but ne credit transfers
+      will be effected nor service fees charged.
     """
 
     METHOD = "sampo"
