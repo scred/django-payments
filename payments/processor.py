@@ -24,7 +24,6 @@ class PaymentProcessor():
     @classmethod
     def get_setting(self, key):
         return settings.PAYMENT_PROCESSORS[self.METHOD][key]
-        # return getattr(settings, "PAYMENT_PROCESSORS")[self.METHOD][key]
 
     @classmethod
     def get_parameter(self, key):
@@ -32,9 +31,6 @@ class PaymentProcessor():
             return getattr(self, key)
         except AttributeError:
             return None
-
-    def __init__(FIXME):
-        pass
 
     ## -- external getters -- ##
 
