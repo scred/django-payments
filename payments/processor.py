@@ -1,4 +1,4 @@
-import settings
+from django.conf import settings
 import logging
 from decimal import Decimal
 from exceptions import PaymentProcessingError
@@ -101,9 +101,9 @@ class PaymentProcessor():
     @classmethod
     def get_costs(self, payment):
         amount = Decimal(payment.get_value("amount"))
-        amount -= amount * (Decimal(self.COST_PERCENTAGE)/100)
-        amount -= Decimal(self.COST_FIXED)
-        return amount.quantize(Decimal("1.00"))
+        cost = amount * (Decimal(self.COST_PERCENTAGE)/100)
+        cost += Decimal(self.COST_FIXED)
+        return cost.quantize(Decimal("1.00"))
 
     ## -- unclassified -- ##
 
