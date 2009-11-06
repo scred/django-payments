@@ -11,8 +11,11 @@ def success(request, payment_method, payment_code):
 
     try:
         return pp.success(request, payment)
-    except PaymentProcessingError:
-        return payment.exception()
+    except PaymentProcessingError, e:
+        # FIXME: redirect to error!
+        print "exception: %s" % e
+        
+        return payment.exception() # FIXME: What bogus is this?
 
     # FIXME: what about the refund hooks?
 

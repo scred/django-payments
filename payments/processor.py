@@ -122,6 +122,7 @@ class PaymentProcessor():
         """
         # call processor validation hooks
         self.success_check_mac(request, payment)
+        self.success_check_params(request, payment)
         self.success_check_custom(request, payment)
         # ...
 

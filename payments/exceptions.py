@@ -3,3 +3,6 @@ class PaymentProcessingError(Exception):
 
 class PaymentInvalidMacError(PaymentProcessingError):
     pass
+
+class PaymentValidationError(PaymentProcessingError):
+    pass

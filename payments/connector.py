@@ -84,18 +84,18 @@ class PaymentConnector():
         raise NotImplementedError("connector doesn't implement load()")
 
     def add_item(self, **kwargs):
-        raise NotImplementedError("not implemented by the connector")        
+        raise NotImplementedError("connector doesn't implement add_item()")
         return self.storage.add_item(self, **kwargs)
 
     def get_items(self):
-        raise NotImplementedError("not implemented by the connector")
+        raise NotImplementedError("connector doesn't implement get_items()")
         return self.storage.get_items(self)
 
     def get_status(self):
-        raise NotImplementedError("not implemented by the connector")
+        raise NotImplementedError("connector doesn't implement get_status()")
 
     def set_status(self, value):
-        raise NotImplementedError("not implemented by the connector")        
+        raise NotImplementedError("connector doesn't implement set_status()")
 
     def query(self, payment_method):
         pp = PaymentProcessor.get_processor(payment_method)
@@ -107,3 +107,4 @@ class PaymentConnector():
 
     def success(self):
         raise NotImplementedError("connector doesn't implement success()")
+
