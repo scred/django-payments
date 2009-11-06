@@ -80,7 +80,7 @@ INSTALLED_APPS = (
     'payments',
 )
 
-# FIXME: having return url here is no good
+# FIXME: having return url here is no good (no idea if it is still event used)
 
 # Settings for payment processors for testing purposes. Override these
 # with production merchant credentials in local_settings.py or
@@ -104,6 +104,7 @@ PAYMENT_PROCESSORS = {
     "op": {
         "merchant_key": "Esittelymyyja",
         "merchant_secret": "Esittelykauppiaansalainentunnus",
+        "merchant_secret_version": "1234",
         "return_url": "/order/%s/",
     },
     "samlink": {
