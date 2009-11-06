@@ -79,12 +79,12 @@ class SampoPaymentProcessor(MaksunapitPaymentProcessor):
     PAYMENT_RESP_MAC = "TARKISTE"
     PAYMENT_RESP_PARAMS = (
         ("merchant_secret", "processor"),
-        ("VIITE", "POST"),
-        ("SUMMA", "POST"),
-        ("STATUS", "POST"),
-        ("KNRO", "POST"),
-        ("VERSIO", "POST"),
-        ("VALUUTTA", "POST"),
+        ("VIITE", "GET"),
+        ("SUMMA", "GET"),
+        ("STATUS", "GET"),
+        ("KNRO", "GET"),
+        ("VERSIO", "GET"),
+        ("VALUUTTA", "GET"),
     )
     PAYMENT_RESP_SEPARATOR = ""
 
