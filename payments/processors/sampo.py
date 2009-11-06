@@ -22,7 +22,11 @@ class SampoPaymentProcessor(MaksunapitPaymentProcessor):
       will be effected nor service fees charged.
     """
 
+    # FATAL: What about cancelled returns? Do they have response MAC
+    # (something that can be replayed as successes)?
+
     METHOD = "sampo"
+    API_VERSION = "3"
 
     URL = "https://verkkopankki.sampopankki.fi/SP/vemaha/VemahaApp"
     QUERY_URL = "https://netbank.danskebank.dk/HB"
@@ -31,7 +35,7 @@ class SampoPaymentProcessor(MaksunapitPaymentProcessor):
     PARAMETERS = {}
 
     DATA_FIXED = {
-        "VERSIO": "3",
+        "VERSIO": API_VERSION,
     }
 
     DATA_MERCHANT = {
@@ -79,11 +83,11 @@ class SampoPaymentProcessor(MaksunapitPaymentProcessor):
     PAYMENT_RESP_MAC = "TARKISTE"
     PAYMENT_RESP_PARAMS = (
         ("merchant_secret", "processor"),
-        ("VIITE", "GET"),
+        ("fi_reference", "payment"), # VIITE
         ("SUMMA", "GET"),
         ("STATUS", "GET"),
         ("KNRO", "GET"),
-        ("VERSIO", "GET"),
+        (API_VERSION, "fixed"), # VERSIO
         ("VALUUTTA", "GET"),
     )
     PAYMENT_RESP_SEPARATOR = ""

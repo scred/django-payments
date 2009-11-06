@@ -1,4 +1,5 @@
 from payments import PaymentProcessor, MaksunapitPaymentProcessor
+from payments.exceptions import PaymentValidationError
 
 class NordeaPaymentProcessor(MaksunapitPaymentProcessor):
 
@@ -22,7 +23,10 @@ class NordeaPaymentProcessor(MaksunapitPaymentProcessor):
       password = anything goes / automatically populated
     """
 
+    # FATAL: Refactor KEYVERS as merchant parameter.
+
     METHOD = "nordea"
+    API_VERSION = "0003"
 
     URL = "https://solo3.nordea.fi/cgi-bin/SOLOPM01"
     QUERY_URL = "https://solo3.nordea.fi/cgi-bin/SOLOPM10"
@@ -32,7 +36,7 @@ class NordeaPaymentProcessor(MaksunapitPaymentProcessor):
     PARAMETERS = {}
 
     DATA_FIXED = {
-        "SOLOPMT_VERSION": "0003",
+        "SOLOPMT_VERSION": API_VERSION,
         "SOLOPMT_CONFIRM": "YES",
         "SOLOPMT_DATE": "EXPRESS",
     }
@@ -88,9 +92,9 @@ class NordeaPaymentProcessor(MaksunapitPaymentProcessor):
 
     PAYMENT_RESP_MAC = "SOLOPMT_RETURN_MAC"
     PAYMENT_RESP_PARAMS = (
-        ("SOLOPMT_RETURN_VERSION", "GET"),
-        ("SOLOPMT_RETURN_STAMP","GET"),
-        ("SOLOPMT_RETURN_REF", "GET"),
+        (API_VERSION, "fixed"), # SOLOPMT_RETURN_VERSION
+        ("code", "payment"), # SOLOPMT_RETURN_STAMP
+        ("fi_reference", "payment"), # SOLOPMT_RETURN_REF
         ("SOLOPMT_RETURN_PAID", "GET"),
         ("merchant_secret", "processor"),
     )
@@ -98,6 +102,14 @@ class NordeaPaymentProcessor(MaksunapitPaymentProcessor):
 
     COST_FIXED = "0.35"
     COST_PERCENTAGE = "0.00"
+
+    @classmethod
+    def success_check_params(self, request, payment):
+
+        if not request.GET.get("SOLOPMT_RETURN_PAID", ''):
+            raise PaymentValidationError("Nordea payment success return " +
+                                         "does not have %s set" %
+                                         "SOLOPMT_RETURN_PAID")
 
     @classmethod
     def query(self, payment):

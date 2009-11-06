@@ -29,6 +29,10 @@ class TapiolaPaymentProcessor(MaksunapitPaymentProcessor):
       token = "9999"
     """
 
+    # FATAL: Refactor KEYVERS as merchant parameter.
+    # FATAL: Use API_VERSION parameter.
+    # FATAL: Take response MAC parameters from payment.
+
     METHOD = "tapiola"
 
     URL = "https://pankki.tapiola.fi/tap_bv/ebank/auth/initLogin.do"

@@ -22,6 +22,10 @@ class AktiaPaymentProcessor(SamlinkPaymentProcessor):
       password = "123456"
     """
 
+    # FATAL: Refactor KEYVERS as merchant parameter.
+    # FATAL: Use API_VERSION parameter.
+    # FATAL: Take response MAC parameters from payment.
+
     METHOD = "aktia"
 
     URL = "https://verkkomaksu.inetpankki.samlink.fi/vm/login.html"

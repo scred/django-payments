@@ -22,6 +22,7 @@ class OpPaymentProcessor(MaksunapitPaymentProcessor):
     """
 
     METHOD = "op"
+    API_VERSION = "1"
 
     URL = "https://kultaraha.op.fi/cgi-bin/krcgi"
     QUERY_URL = "https://kultaraha.op.fi/cgi-bin/krcgi"
@@ -31,13 +32,13 @@ class OpPaymentProcessor(MaksunapitPaymentProcessor):
 
     DATA_FIXED = {
         "action_id": "701",
-        "VERSIO": "1",
-        "TARKISTE-VERSIO": "1", # FIXME: might need to be flexible
+        "VERSIO": API_VERSION,
         "VAHVISTE": "K",
     }
 
     DATA_MERCHANT = {
         "MYYJA": "merchant_key",
+        "TARKISTE-VERSIO": "merchant_secret_version",
         # "merchant_secret"
     }
 
@@ -82,11 +83,11 @@ class OpPaymentProcessor(MaksunapitPaymentProcessor):
 
     PAYMENT_RESP_MAC = "TARKISTE"
     PAYMENT_RESP_PARAMS = (
-        ("VERSIO", "GET"),
+        (API_VERSION, "fixed"),
         ("MAKSUTUNNUS", "GET"),
-        ("VIITE", "GET"),
+        ("fi_reference", "payment"), # VIITE
         ("ARKISTOINTITUNNUS", "GET"),
-        ("TARKISTEVERSIO", "GET"),        
+        ("merchant_secret_version", "processor"), # TARKISTEVERSIO
         ("merchant_secret", "processor"),
     )
     PAYMENT_RESP_SEPARATOR = ""

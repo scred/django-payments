@@ -40,15 +40,23 @@ class MaksunapitPaymentProcessor(PaymentProcessor):
                 s += request.POST.get(var, '')
             elif source == 'processor':
                 s += self.get_setting(var)
+            elif source == 'payment':
+                s += payment.get_value(var)
+            elif source == 'fixed':
+                s += var
             else:
-                pass
+                raise PaymentProcessingError("unknown MAC source: %s" % source)
             s += self.PAYMENT_RESP_SEPARATOR
 
-        m = md5.new(s)
+        digest = md5.md5(s).hexdigest()
         return_mac = request.GET.get(self.PAYMENT_RESP_MAC, '')
+        print "mac string:", s
+        print "digest:", digest
 
-        if m.hexdigest().upper() != return_mac.upper():
+        if digest.upper() != return_mac.upper():
             raise PaymentInvalidMacError("Return MAC doesn't match!")
+
+        
 
     @classmethod
     def massage_amount(self, value):

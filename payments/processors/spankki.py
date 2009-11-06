@@ -23,6 +23,10 @@ class SpankkiPaymentProcessor(MaksunapitPaymentProcessor):
       token = "1234"
     """
 
+    # FATAL: Refactor KEYVERS as merchant parameter.
+    # FATAL: Use API_VERSION parameter.
+    # FATAL: Take response MAC parameters from payment.
+
     METHOD = "spankki"
 
     URL = "https://online.s-pankki.fi/service/paybutton"

@@ -17,6 +17,10 @@ class SamlinkPaymentProcessor(MaksunapitPaymentProcessor):
       http://bit.ly/6XWNf (in Finnish, PDF) [Handelsbanken]
     """
 
+    # FATAL: Refactor KEYVERS as merchant parameter.
+    # FATAL: Use API_VERSION parameter.
+    # FATAL: Take response MAC parameters from payment.
+
     URL = "https://verkkomaksu.inetpankki.samlink.fi/vm/login.html"
     QUERY_URL = "https://verkkomaksu.inetpankki.samlink.fi/vm/kysely.html"
     BUTTON_URL = "FIXME"
