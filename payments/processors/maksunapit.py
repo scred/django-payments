@@ -6,7 +6,7 @@ Hack to implement a base class for all Finnish online debit payments
 import md5 # FIXME: use hashlib instead
 
 from payments.processor import PaymentProcessor
-from payments.exceptions import PaymentProcessingError
+from payments.exceptions import PaymentProcessingError, PaymentInvalidMacError
 
 class MaksunapitPaymentProcessor(PaymentProcessor):
 
