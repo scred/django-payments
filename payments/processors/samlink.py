@@ -11,10 +11,6 @@ class SamlinkPaymentProcessor(MaksunapitPaymentProcessor):
 
     Features: authcap, (query)
 
-    Merchant parameters:
-      - merchant_key
-      - merchant_secret
-
     Region(s): FI
 
     Specifications:
@@ -24,8 +20,8 @@ class SamlinkPaymentProcessor(MaksunapitPaymentProcessor):
     METHOD = None
     API_VERSION = "001"
 
-    URL = "https://verkkomaksu.inetpankki.samlink.fi/vm/login.html"
-    QUERY_URL = "https://verkkomaksu.inetpankki.samlink.fi/vm/kysely.html"
+    # URL: defined by the bank specific class
+    # QUERY_URL: defined by the bank specific class
     BUTTON_URL = "FIXME"
 
     PARAMETERS = {}
@@ -90,6 +86,9 @@ class SamlinkPaymentProcessor(MaksunapitPaymentProcessor):
         ("merchant_secret", "processor"),
     )
     PAYMENT_RESP_SEPARATOR = "&"
+
+    # COST_FIXED: bank specific
+    # COST_PERCENTAGE: bank specific
 
     @classmethod
     def query(self, payment):
