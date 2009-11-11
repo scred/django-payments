@@ -152,6 +152,12 @@ class PaymentProcessor():
     def success_check_custom(self, request, payment):
         pass
 
+    ## -- error operations -- ##
+
+    @classmethod
+    def error(self, request, payment, e=None):
+        return payment.error(e)
+
     ## -- actions -- ##
 
     @classmethod
@@ -165,5 +171,3 @@ class PaymentProcessor():
                                   self.METHOD)
 
     ## -- miscellaneous -- ##
-
-    # ??

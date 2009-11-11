@@ -12,11 +12,6 @@ def success(request, payment_method, payment_code):
     try:
         return pp.success(request, payment)
     except PaymentProcessingError, e:
-        # FIXME: redirect to error!
-        print "exception: %s" % e
-        
-        return payment.exception() # FIXME: What bogus is this?
+        return pp.error(request, payment, e)
 
-    # FIXME: what about the refund hooks?
-
-    # FIXME: what about the payment check hooks?
+# FATAL: missing error() and cancel() views completely!
