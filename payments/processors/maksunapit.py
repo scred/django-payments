@@ -12,7 +12,6 @@ class MaksunapitPaymentProcessor(PaymentProcessor):
 
     @classmethod
     def checkout_hash(self, data):
-
         s = ""
         for (var, source) in self.PAYMENT_REQ_PARAMS:
             if source == "data":
@@ -31,7 +30,6 @@ class MaksunapitPaymentProcessor(PaymentProcessor):
 
     @classmethod
     def success_check_mac(self, request, payment):
-
         s = ""
         for (var, source) in self.PAYMENT_RESP_PARAMS:
             if source == 'GET':
@@ -50,13 +48,13 @@ class MaksunapitPaymentProcessor(PaymentProcessor):
 
         digest = md5.md5(s).hexdigest()
         return_mac = request.GET.get(self.PAYMENT_RESP_MAC, '')
-        print "mac string:", s
-        print "digest:", digest
 
         if digest.upper() != return_mac.upper():
             raise PaymentInvalidMacError("Return MAC doesn't match!")
 
-        
+    @classmethod
+    def success_check_params(self, request, payment):
+        pass
 
     @classmethod
     def massage_amount(self, value):
