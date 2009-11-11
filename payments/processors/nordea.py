@@ -23,8 +23,6 @@ class NordeaPaymentProcessor(MaksunapitPaymentProcessor):
       password = anything goes / automatically populated
     """
 
-    # FATAL: Refactor KEYVERS as merchant parameter.
-
     METHOD = "nordea"
     API_VERSION = "0003"
 
@@ -41,12 +39,11 @@ class NordeaPaymentProcessor(MaksunapitPaymentProcessor):
         "SOLOPMT_DATE": "EXPRESS",
     }
 
-    # FIXME: KEYVERS: needed or not
-
     DATA_MERCHANT = {
         "SOLOPMT_RCV_ID": "merchant_key",
         "SOLOPMT_RCV_NAME": "merchant_name",
         "SOLOPMT_RCV_ACCOUNT": "merchant_account",
+        "SOLOPMT_KEYVERS": "merchant_secret_version",
         # "merchant_secret"
     }
 
