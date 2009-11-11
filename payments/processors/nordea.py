@@ -16,6 +16,7 @@ class NordeaPaymentProcessor(MaksunapitPaymentProcessor):
     Merchant credentials for testing:
       merchant_key = "12345678"
       merchant_secret = "LEHTI"
+      merchant_secret_version = "0001"
       merchant_account = "29501800000014"
 
     Client credentials for testing:
