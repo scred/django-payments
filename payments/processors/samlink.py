@@ -11,15 +11,18 @@ class SamlinkPaymentProcessor(MaksunapitPaymentProcessor):
 
     Features: authcap, (query)
 
+    Merchant parameters:
+      - merchant_key
+      - merchant_secret
+
     Region(s): FI
 
     Specifications:
       http://bit.ly/6XWNf (in Finnish, PDF) [Handelsbanken]
     """
 
-    # FATAL: Refactor KEYVERS as merchant parameter.
-    # FATAL: Use API_VERSION parameter.
-    # FATAL: Take response MAC parameters from payment.
+    METHOD = None
+    API_VERSION = "001"
 
     URL = "https://verkkomaksu.inetpankki.samlink.fi/vm/login.html"
     QUERY_URL = "https://verkkomaksu.inetpankki.samlink.fi/vm/kysely.html"
@@ -28,15 +31,13 @@ class SamlinkPaymentProcessor(MaksunapitPaymentProcessor):
     PARAMETERS = {}
 
     DATA_FIXED = {
-        "NET_VERSION": "001",
+        "NET_VERSION": API_VERSION,
         "NET_CONFIRM": "YES",
         "NET_DATE": "EXPRESS",
     }
 
     DATA_MERCHANT = {
         "NET_SELLER_ID": "merchant_key",
-        #"NET_SELLER_NAME": "merchant_name",
-        #"NET_SELLER_ACCOUNT": "merchant_account",
         # "merchant_secret"
     }
 
@@ -82,9 +83,9 @@ class SamlinkPaymentProcessor(MaksunapitPaymentProcessor):
 
     PAYMENT_RESP_MAC = "NET_RETURN_MAC"
     PAYMENT_RESP_PARAMS = (
-        ("NET_RETURN_VERSION", "GET"),
-        ("NET_RETURN_STAMP","GET"),
-        ("NET_RETURN_REF", "GET"),
+        (API_VERSION, "fixed"), # NET_RETURN_VERSION
+        ("code","payment"), # NET_RETURN_STAMP
+        ("fi_reference", "payment"), # NET_RETURN_REF
         ("NET_RETURN_PAID", "GET"),
         ("merchant_secret", "processor"),
     )
