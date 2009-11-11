@@ -33,7 +33,7 @@ class OpPaymentProcessor(MaksunapitPaymentProcessor):
     DATA_FIXED = {
         "action_id": "701",
         "VERSIO": API_VERSION,
-        "VAHVISTE": "K",
+        "VAHVISTUS": "Y",
     }
 
     DATA_MERCHANT = {
