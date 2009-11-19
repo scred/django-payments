@@ -111,8 +111,6 @@ class LuottokuntaPaymentProcessor(PaymentProcessor):
     @classmethod
     def success_check_mac(self, request, payment):
 
-        print "check mac: payment:", payment.get_value("amount")
-
         s = ""
         for (var, source) in self.PAYMENT_RESP_PARAMS:
             if source == 'GET':
@@ -135,11 +133,6 @@ class LuottokuntaPaymentProcessor(PaymentProcessor):
 
         m = md5.new(s)
         return_mac = request.GET.get(self.PAYMENT_RESP_MAC, '')
-
-        print "MAC-A:", m.hexdigest().upper()
-        print "MAC-B:", return_mac.upper()
-
-        print "MAC-s:", s
 
         if m.hexdigest().upper() != return_mac.upper():
             raise PaymentInvalidMacError("Return MAC doesn't match!")
