@@ -97,13 +97,19 @@ class NordeaPaymentProcessor(MaksunapitPaymentProcessor):
         ("merchant_secret", "processor"),
     )
     PAYMENT_RESP_SEPARATOR = "&"
+    PAYMENT_RESP_PROCESSOR_REFERENCE = "SOLOPMT_RETURN_PAID"
 
     COST_FIXED = "0.35"
     COST_PERCENTAGE = "0.00"
 
     @classmethod
     def success_check_params(self, request, payment):
-
+        """
+        Nordea online payments are only complete if
+        SOLOPMT_RETURN_PAID is returned. Without the parameter we
+        don't have an instantly complete payment (which is what we've
+        requested from Nordea).
+        """
         if not request.GET.get("SOLOPMT_RETURN_PAID", ''):
             raise PaymentValidationError("Nordea payment success return " +
                                          "does not have %s set" %

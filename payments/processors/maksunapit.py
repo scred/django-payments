@@ -59,3 +59,7 @@ class MaksunapitPaymentProcessor(PaymentProcessor):
     @classmethod
     def massage_amount(self, value):
         return value.replace(".", ",")
+
+    @classmethod
+    def get_processor_reference(self, request):
+        return request.GET.get(self.PAYMENT_RESP_PROCESSOR_REFERENCE, '')

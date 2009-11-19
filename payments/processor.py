@@ -111,6 +111,10 @@ class PaymentProcessor():
     def massage_amount(self, value):
         return value
 
+    @classmethod
+    def get_processor_reference(self, request):
+        return None
+
     ## -- success operations -- ##
 
     @classmethod
@@ -129,7 +133,8 @@ class PaymentProcessor():
         # everything checks okay, store the status
         payment.set_status("success")
         payment.set_value("payment_method", self.METHOD)
-        payment.set_value("processor_reference", "FIXME")
+        payment.set_value("processor_reference",
+                          self.get_processor_reference(request))
 
         return payment.success()
         
