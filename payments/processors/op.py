@@ -91,6 +91,7 @@ class OpPaymentProcessor(MaksunapitPaymentProcessor):
         ("merchant_secret", "processor"),
     )
     PAYMENT_RESP_SEPARATOR = ""
+    PAYMENT_RESP_PROCESSOR_REFERENCE = "ARKISTOINTITUNNUS"
 
     COST_FIXED = "0.34"
     COST_PERCENTAGE = "0.00"

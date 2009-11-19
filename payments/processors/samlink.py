@@ -86,6 +86,7 @@ class SamlinkPaymentProcessor(MaksunapitPaymentProcessor):
         ("merchant_secret", "processor"),
     )
     PAYMENT_RESP_SEPARATOR = "&"
+    PAYMENT_RESP_PROCESSOR_REFERENCE = "NET_RETURN_PAID"
 
     # COST_FIXED: bank specific
     # COST_PERCENTAGE: bank specific

@@ -91,6 +91,7 @@ class SampoPaymentProcessor(MaksunapitPaymentProcessor):
         ("VALUUTTA", "GET"),
     )
     PAYMENT_RESP_SEPARATOR = ""
+    PAYMENT_RESP_PROCESSOR_REFERENCE = None
 
     COST_FIXED = "0.35"
     COST_PERCENTAGE = "0.00"

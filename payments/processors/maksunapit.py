@@ -62,4 +62,6 @@ class MaksunapitPaymentProcessor(PaymentProcessor):
 
     @classmethod
     def get_processor_reference(self, request):
-        return request.GET.get(self.PAYMENT_RESP_PROCESSOR_REFERENCE, '')
+        if self.PAYMENT_RESP_PROCESSOR_REFERENCE:
+            return request.GET.get(self.PAYMENT_RESP_PROCESSOR_REFERENCE, '')
+        return '-'
