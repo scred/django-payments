@@ -138,8 +138,8 @@ class PaymentProcessor():
 
         return payment.success()
         
-        # should we check the payment value and stuff like that?
-        # who makes the call for audit?
+        # FATAL: should we check the payment value and stuff like that?
+        # FIXME: who makes the call for audit?
 
     @classmethod
     def success_check_mac(self, request, payment):
@@ -156,6 +156,12 @@ class PaymentProcessor():
     @classmethod
     def success_check_custom(self, request, payment):
         pass
+
+    ## -- cancel operations -- ##
+
+    @classmethod
+    def cancel(self, request, payment):
+        return payment.cancel()
 
     ## -- error operations -- ##
 
