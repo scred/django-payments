@@ -1,6 +1,6 @@
-from django.conf import settings
 import logging
 from decimal import Decimal
+from django.conf import settings
 from exceptions import PaymentProcessingError
 
 class PaymentProcessor():
@@ -23,7 +23,9 @@ class PaymentProcessor():
 
     @classmethod
     def get_setting(self, key):
-        return settings.PAYMENT_PROCESSORS[self.METHOD][key]
+        from connector import PaymentConnector
+        c = PaymentConnector.get_connector()
+        return c.get_processor_settings()[self.METHOD][key]
 
     @classmethod
     def get_parameter(self, key):
